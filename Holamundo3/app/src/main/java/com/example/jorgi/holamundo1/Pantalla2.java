@@ -17,11 +17,22 @@ public class Pantalla2 extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pantalla2);
+        setContentView(R.layout.pantalla2);
 
-        final TextView otroSaludo= (TextView)findViewById(R.id.textoSaludo);
+        final TextView otroSaludo = (TextView)findViewById(R.id.textoSaludo);
+        final Button btnVolver = (Button)findViewById(R.id.volver);
+
         Bundle miBundleRecoger = getIntent().getExtras();
-        otroSaludo.setText(miBundleRecoger.getString("TEXTO") + miBundleRecoger.getString("EDAD"));
+        otroSaludo.setText(miBundleRecoger.getString("TEXTO"));
 
+        btnVolver.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent miIntent = new Intent(Pantalla2.this, MainActivity.class);
+                Bundle miBundle = new Bundle();
+                miBundle.putString("DEVUELTO", String.valueOf(otroSaludo));
+                miIntent.putExtras(miBundle);
+                startActivityForResult(miIntent, RESULT_OK);
+            }
+        });
     }
 }

@@ -26,18 +26,6 @@
         android:layout_alignParentEnd="true" />
 
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Edad"
-        android:id="@+id/textoEdad" />
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/edad" />
-
-    <TextView
         android:id="@+id/mensaje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />

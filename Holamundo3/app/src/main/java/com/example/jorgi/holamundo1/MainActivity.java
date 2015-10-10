@@ -12,6 +12,9 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
 
+    public static int COD_RESPUESTA=0;
+    TextView elSaludo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,7 +23,6 @@ public class MainActivity extends Activity {
 
         // final TextView mensajeIni;
         final EditText miTexto = (EditText) findViewById(R.id.nombre);
-        final EditText miEdad = (EditText) findViewById(R.id.edad);
         final Button miBoton = (Button) findViewById(R.id.enviar);
         final TextView elSaludo = (TextView) findViewById(R.id.mensaje);
 
@@ -36,15 +38,15 @@ public class MainActivity extends Activity {
                 Intent miIntent= new Intent(MainActivity.this, Pantalla2.class);
                 Bundle miBundle=new Bundle();
                 String mensajePaso= "Te saludo " + miTexto.getText();
-                String mensajeEdad= "Tu edad es de " + miEdad.getText();
                 miBundle.putString("TEXTO", mensajePaso);
-                miBundle.putString("EDAD", mensajeEdad);
                 miIntent.putExtras(miBundle);
-                startActivity(miIntent);
-            }
-        });
-
-
+                startActivityForResult(miIntent, COD_RESPUESTA);
+            } });
     }
-
+    public void onActivityResult(int cod_resp, int cod_result,Intent intent){
+        if (cod_result== RESULT_OK) {
+            Bundle otroBundle = intent.getExtras();
+            elSaludo.setText(otroBundle.getString("DEVUELTO"));
+        }
+    }
 }
