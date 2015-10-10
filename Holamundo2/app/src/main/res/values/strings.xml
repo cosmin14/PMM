@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Holamundo2</string>
+
+    <string name="hello_world">Saludo</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_pantalla2">Pantalla2</string>
+</resources>
