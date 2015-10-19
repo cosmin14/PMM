@@ -4,10 +4,6 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
-    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textView" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,11 +21,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 
-    <TextView
-        android:id="@+id/mensaje"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,5 +30,8 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal" />
 
+    <TextView android:text="@string/hello_world" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/elSaludo" />
 
 </LinearLayout>

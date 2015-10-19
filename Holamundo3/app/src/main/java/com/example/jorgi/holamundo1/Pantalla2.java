@@ -2,6 +2,7 @@ package com.example.jorgi.holamundo1;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,17 +23,16 @@ public class Pantalla2 extends Activity {
         final TextView otroSaludo = (TextView)findViewById(R.id.textoSaludo);
         final Button btnVolver = (Button)findViewById(R.id.volver);
 
-        Bundle miBundleRecoger = getIntent().getExtras();
-        otroSaludo.setText(miBundleRecoger.getString("TEXTO"));
+        final Bundle miBundleRecoger = getIntent().getExtras();
+        otroSaludo.setText("TE SALUDO " + miBundleRecoger.getString("SALUDO"));
 
         btnVolver.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent miIntent = new Intent(Pantalla2.this, MainActivity.class);
-                Bundle miBundle = new Bundle();
-                miBundle.putString("DEVUELTO", String.valueOf(otroSaludo));
-                miIntent.putExtras(miBundle);
-                startActivityForResult(miIntent, RESULT_OK);
-            }
-        });
+                String saludoDevuelto = miBundleRecoger.getString("SALUDO");
+                Intent i = getIntent();
+                i.putExtra("DEVUELTO", saludoDevuelto);
+                setResult(RESULT_OK, i);
+                finish();
+            } });
     }
 }

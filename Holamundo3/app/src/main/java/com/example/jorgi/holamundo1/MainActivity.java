@@ -24,7 +24,7 @@ public class MainActivity extends Activity {
         // final TextView mensajeIni;
         final EditText miTexto = (EditText) findViewById(R.id.nombre);
         final Button miBoton = (Button) findViewById(R.id.enviar);
-        final TextView elSaludo = (TextView) findViewById(R.id.mensaje);
+        final TextView elSaludo = (TextView) findViewById(R.id.elSaludo);
 
         //Borrar el texto inicial del EditText
         miTexto.setOnClickListener(new View.OnClickListener() {
@@ -32,21 +32,22 @@ public class MainActivity extends Activity {
                 miTexto.setText("");
             }
         });
+        elSaludo.setText("");
 
         miBoton.setOnClickListener( new View.OnClickListener(){
             public void onClick(View v){
                 Intent miIntent= new Intent(MainActivity.this, Pantalla2.class);
-                Bundle miBundle=new Bundle();
-                String mensajePaso= "Te saludo " + miTexto.getText();
-                miBundle.putString("TEXTO", mensajePaso);
+                    Bundle miBundle=new Bundle();
+                    String mensajePaso= miTexto.getText().toString();
+                    miBundle.putString("SALUDO", mensajePaso);
                 miIntent.putExtras(miBundle);
                 startActivityForResult(miIntent, COD_RESPUESTA);
             } });
     }
-    public void onActivityResult(int cod_resp, int cod_result,Intent intent){
-        if (cod_result== RESULT_OK) {
-            Bundle otroBundle = intent.getExtras();
-            elSaludo.setText(otroBundle.getString("DEVUELTO"));
-        }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        String resultado = intent.getExtras().getString("DEVUELTO");
+        elSaludo = (TextView) findViewById(R.id.elSaludo);
+        elSaludo.setText("TE DEVUELVO EL SALUDO " + resultado);
     }
 }
