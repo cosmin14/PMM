@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jorgi.ejercicio_layout_radio" >
+    package="com.example.jorgi.ejercicio_layouts" >
 
     <application
         android:allowBackup="true"
@@ -19,6 +19,10 @@
         <activity
             android:name=".tableLayout_activity"
             android:label="@string/title_activity_table_layout" >
+        </activity>
+        <activity
+            android:name=".RelativeLayout"
+            android:label="@string/title_activity_relative_layout" >
         </activity>
     </application>
 

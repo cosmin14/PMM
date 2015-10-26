@@ -1,4 +1,4 @@
-package com.example.jorgi.ejercicio_layout_radio;
+package com.example.jorgi.ejercicio_layouts;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

@@ -1,4 +1,4 @@
-package com.example.jorgi.ejercicio_layout_radio;
+package com.example.jorgi.ejercicio_layouts;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
