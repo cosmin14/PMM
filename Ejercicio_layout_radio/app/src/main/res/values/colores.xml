@@ -1,0 +1,4 @@
+<resources>
+    <drawable name="colorFondo">#000000</drawable>
+    <drawable name="colorTexto">#FFFFFF</drawable>
+</resources>
