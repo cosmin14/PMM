@@ -1,4 +1,7 @@
 <resources>
     <drawable name="colorFondo">#000000</drawable>
     <drawable name="colorTexto">#FFFFFF</drawable>
+    <drawable name="colorRed">#FF0000</drawable>
+    <drawable name="colorYellow">#FFFE00</drawable>
+    <drawable name="colorBlue">#0000FF</drawable>
 </resources>
