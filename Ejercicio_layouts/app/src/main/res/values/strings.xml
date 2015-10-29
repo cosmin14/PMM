@@ -6,6 +6,7 @@
     <string name="rojo">Rojo</string>
     <string name="verde">Verde</string>
     <string name="azul">Azul</string>
-    <string name="title_activity_table_layout">tableLayout_activity</string>
-    <string name="title_activity_relative_layout">RelativeLayout</string>
+    <string name="title_activity_linear_layout">Linear Layout</string>
+    <string name="title_activity_table_layout">Table Layout</string>
+    <string name="title_activity_relative_layout">Relative Layout</string>
 </resources>
