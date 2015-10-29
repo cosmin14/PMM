@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Ejercicio_checkbox</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="cycling">Cycling</string>
+    <string name="teaching">Teaching</string>
+    <string name="bloggin">Bloggin</string>
+</resources>
