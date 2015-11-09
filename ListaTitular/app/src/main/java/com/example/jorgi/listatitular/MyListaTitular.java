@@ -1,7 +1,6 @@
 package com.example.jorgi.listatitular;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,12 +11,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MyListaTitular extends AppCompatActivity {
+public class MyListaTitular extends Activity {
 
-    static Titular titulares[] = new Titular[] {
-            new Titular("Titular 1","Subtitulo 1"),
-            new Titular("Titular 2","Subtitulo2"),
-            new Titular("Titular 3","Subtitulo3"),
+    private Titular titulares[] =
+            new Titular[] {
+                new Titular("Jose","Garcia Garcia", 25),
+                new Titular("Pepito","Fernandez Fernandez", 30),
+                new Titular("Juan","Navarro Navarro", 35),
     };
 
     ListView miLista;
@@ -27,26 +27,22 @@ public class MyListaTitular extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_lista_titular);
 
-        String mensaje;
-        miLista = (ListView) findViewById(R.id.ListTitular);
-
         AdaptadorTitulares adaptador = new AdaptadorTitulares(this);
+        miLista = (ListView) findViewById(R.id.ListTitular);
         miLista.setAdapter(adaptador);
 
-
-        miLista.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView arg0, View arg1, int position, long id) {
+        miLista.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView arg0, View arg1, int position, long id) {
                 String mensaje = "";
-                mensaje = "Item clicked => " + titulares[position];
-                Toast.makeText(MyListaTitular.this, mensaje, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
+                mensaje = "" + titulares[position].getTitulo() + " " + titulares[position].getSubtitulo() + " tiene " + titulares[position].getEdad() + " años.";
+                showToast(mensaje);
             }
         });
 
+    }
+
+    public void showToast(String text){
+        Toast.makeText(MyListaTitular.this, text, Toast.LENGTH_SHORT).show();
     }
 
     class AdaptadorTitulares extends ArrayAdapter {
@@ -61,10 +57,15 @@ public class MyListaTitular extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = context.getLayoutInflater();
             View item = inflater.inflate(R.layout.listitem_titular, null);
+
             TextView lblTitulo = (TextView) item.findViewById(R.id.LblTitulo);
             lblTitulo.setText(titulares[position].getTitulo());
-            TextView lblSubtitulo = (TextView) item.findViewById(R.id.LblSubTitulo);
-            lblSubtitulo.setText(titulares[position].getSubtitulo());
+            //Toast.makeText(MyListaTitular.this, titulares[position].getTitulo(), Toast.LENGTH_SHORT).show();
+
+            //TextView lblSubtitulo = (TextView) item.findViewById(R.id.LblSubTitulo);
+            //lblSubtitulo.setText(titulares[position].getSubtitulo());
+            //Toast.makeText(MyListaTitular.this, titulares[position].getSubtitulo(), Toast.LENGTH_SHORT).show();
+
             return (item);
         }
     }

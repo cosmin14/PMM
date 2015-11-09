@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">ExPizzeria</string>
+    <string name="title_activity_factura">factura</string>
+    <string name="nombre">Pizza: </string>
+</resources>

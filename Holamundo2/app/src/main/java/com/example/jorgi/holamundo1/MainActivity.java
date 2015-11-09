@@ -34,11 +34,11 @@ public class MainActivity extends Activity {
         miBoton.setOnClickListener( new View.OnClickListener(){
             public void onClick(View v){
                 Intent miIntent= new Intent(MainActivity.this, Pantalla2.class);
-                Bundle miBundle=new Bundle();
-                String mensajePaso= "Te saludo " + miTexto.getText();
-                String mensajeEdad= "Tu edad es de " + miEdad.getText();
-                miBundle.putString("TEXTO", mensajePaso);
-                miBundle.putString("EDAD", mensajeEdad);
+                    Bundle miBundle=new Bundle();
+                    String mensajePaso= "Te saludo " + miTexto.getText();
+                    String mensajeEdad= "Tu edad es de " + miEdad.getText();
+                    miBundle.putString("TEXTO", mensajePaso);
+                    miBundle.putString("EDAD", mensajeEdad);
                 miIntent.putExtras(miBundle);
                 startActivity(miIntent);
             }
