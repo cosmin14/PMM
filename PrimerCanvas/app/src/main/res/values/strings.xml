@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">PrimerCanvas</string>
+    <string name="action_settings">Settings</string>
+    <string name="menuIncial">Menu</string>
+</resources>

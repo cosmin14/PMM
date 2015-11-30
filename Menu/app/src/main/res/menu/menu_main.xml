@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+    <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/MenuOpc1" android:title="Opcion 1"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/MenuOpc2" android:title="Opcion 2"
+        android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/MenuOpc3" android:title="Opcion 3"
+        android:orderInCategory="100" app:showAsAction="never" >
+        <menu>
+            <item android:id="@+id/MenuOpc31" android:title="Opcion 3.1"
+                android:orderInCategory="100" app:showAsAction="never" />
+            <item android:id="@+id/MenuOpc32" android:title="Opcion 3.2"
+                android:orderInCategory="100" app:showAsAction="never" />
+        </menu>
+    </item>
+</menu>
