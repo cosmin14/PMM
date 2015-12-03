@@ -80,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
             // Cuerpo
             lienzo.drawCircle(750,1100,400,miPincel);
             // Botones cuerpo
+            //miPincel.setStyle(Paint.Style.FILL);
             lienzo.drawCircle(750,950,40,miPincel);
             lienzo.drawCircle(740,940,5,miPincel);
             lienzo.drawCircle(740,960,5,miPincel);
