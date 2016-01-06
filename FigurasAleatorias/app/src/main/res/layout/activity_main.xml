@@ -17,5 +17,13 @@
         android:layout_height="wrap_content"
         android:text="Drawable" />
 
+    <Button
+        android:onClick="launchMisDibujos"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Mis Dibujos"
+        android:id="@+id/buttonMisDibujos"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
 

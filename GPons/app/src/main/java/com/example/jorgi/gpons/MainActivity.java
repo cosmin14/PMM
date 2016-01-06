@@ -132,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
     }//Fin onCreate
 
     class AdaptadorPizzas extends ArrayAdapter<Pizza> {
+
         public Activity miActividad;
 
         public AdaptadorPizzas(Activity laActividad){
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public View getView(int position, View convertView, ViewGroup parent) {
+
             LayoutInflater inflater = miActividad.getLayoutInflater();
             View item = inflater.inflate(R.layout.lista, null);
 

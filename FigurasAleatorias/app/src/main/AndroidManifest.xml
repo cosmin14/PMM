@@ -25,6 +25,11 @@
             android:label="@string/title_activity_draw_shapes2"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <activity
+            android:name=".MisDibujos"
+            android:label="@string/title_activity_mis_dibujos"
+            android:theme="@style/AppTheme.NoActionBar" >
+        </activity>
     </application>
 
 </manifest>
