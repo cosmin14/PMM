@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="arrayProvincia">
+        <item>--</item>
+        <item>Com. Valenciana</item>
+        <item>Catalunya</item>
+        <item>Andalucia</item>
+    </string-array>
+    <string-array name="arrayComValenciana">
+        <item>Castellon</item>
+        <item>Valencia</item>
+        <item>Alicante</item>
+    </string-array>
+    <string-array name="arrayCatalunya">
+        <item>Lerida</item>
+        <item>Gerona</item>
+        <item>Barcelona</item>
+        <item>Tarragona</item>
+    </string-array>
+    <string-array name="arrayAndalucia">
+        <item>Huelva</item>
+        <item>Sevilla</item>
+        <item>Cordoba</item>
+        <item>Jaen</item>
+        <item>Cadiz</item>
+        <item>Malaga</item>
+        <item>Granada</item>
+        <item>Almeria</item>
+    </string-array>
+    <string-array name="arrayDefecto">
+        <item>--</item>
+    </string-array>
+</resources>

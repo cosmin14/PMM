@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">SQLite1</string>
+    <string name="title_activity_clientes_sqlite_helper">ClientesSQLiteHelper</string>
+</resources>

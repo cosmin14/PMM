@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Ejercicio de Navidad 2</string>
+    <string name="action_about">Acerca de...</string>
+    <string name="title_activity_about">Acerca de...</string>
+    <string name="title_activity_datos">Datos del cliente</string>
+    <string name="title_activity_resumen">Resumen del pedido</string>
+    <string name="title_activity_informacion">informacion</string>
+    <string name="google_maps_key">Map</string>
+
+</resources>
