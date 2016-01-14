@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Jorgi on 11/01/2016.
  */
 public class ClientesSQLiteHelper extends SQLiteOpenHelper {
+
+    // C:\Users\Jorgi\AppData\Local\Android\sdk1\platform-tools
+
     //Cadena con la sentencia SQL que permite crear la tabla Clientes
     String cadSQL = "CREATE TABLE Clientes (codigo INTEGER, nombre TEXT, telefono TEXT)";
 
@@ -30,15 +33,14 @@ public class ClientesSQLiteHelper extends SQLiteOpenHelper {
     //de la base de datos o una conversion de los datos.
     @Override
     public void onUpgrade(SQLiteDatabase bd, int versionAnterior, int versionNueva) {
-        //NOTA: Para simplificar este ejemplo eliminamos la tabla anterior y la creamos de nuevo
-        //		con el nuevo formato.
+        //NOTA: Para simplificar este ejemplo eliminamos la tabla anterior y la creamos de nuevo con el nuevo formato.
         //		Lo normal sera realizar una migracion o traspaso de los datos de la tabla antigua
         //		a la nueva, con la consiguiente complicacion que ello conlleva.
 
         //Eliminamos la version anterior de la tabla
         bd.execSQL("DROP TABLE IF EXISTS Clientes");
 
-        //Creamos la nueva versi�n de la tabla
+        //Creamos la nueva versión de la tabla
         bd.execSQL(cadSQL);
     }
 }
