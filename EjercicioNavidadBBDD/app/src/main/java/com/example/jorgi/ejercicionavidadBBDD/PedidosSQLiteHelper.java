@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class PedidosSQLiteHelper extends SQLiteOpenHelper {
 
-    //Sentencia SQL para crear la tabla de Usuarios
+    // C: - cd\Users\Jorgi\AppData\Local\Android\sdk1\platform-tools
+
+    //Sentencia SQL para crear la tabla de Pedidos
     String sqlCreate = "CREATE TABLE IF NOT EXISTS `pedidos` (" +
             "  `codigo` INTEGER NOT NULL PRIMARY KEY," +
             "  `usuarioDNI` TEXT NOT NULL," +
@@ -40,7 +42,7 @@ public class PedidosSQLiteHelper extends SQLiteOpenHelper {
         //Se elimina la versión anterior de la tabla
         db.execSQL("DROP TABLE IF EXISTS pedidos");
 
-        //Se crea la nueva versión de la tabla vacía de datos
+        //Se crea la nueva versión de la tabla vacía de datosActivity
         db.execSQL(sqlCreate);
     }
 }

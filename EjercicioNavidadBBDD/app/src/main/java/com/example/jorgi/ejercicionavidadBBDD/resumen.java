@@ -1,6 +1,5 @@
 package com.example.jorgi.ejercicionavidadBBDD;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -8,14 +7,13 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CursorAdapter;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
@@ -27,6 +25,8 @@ public class resumen extends ActionBarActivity {
     /* PEDIDO */
     TextView continente, envio, tarifaPeso, precio, peso;
     ImageView imageViewContinente;
+
+    EnviosSQLiteHelper enviosHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +46,11 @@ public class resumen extends ActionBarActivity {
         spec = tabs.newTabSpec("mitab2");
         spec.setContent(R.id.tabPedido);
         spec.setIndicator("", res.getDrawable(android.R.drawable.ic_menu_view));
+        tabs.addTab(spec);
+
+        spec = tabs.newTabSpec("mitab3");
+        spec.setContent(R.id.tabMisPedidos);
+        spec.setIndicator("", res.getDrawable(android.R.drawable.ic_menu_agenda));
         tabs.addTab(spec);
 
         tabs.setCurrentTab(0);
@@ -70,7 +75,7 @@ public class resumen extends ActionBarActivity {
         imageViewContinente = (ImageView)findViewById(R.id.imageViewContinente);
         envio = (TextView)findViewById(R.id.textViewEnvio);
         tarifaPeso = (TextView)findViewById(R.id.textViewTarifaPeso);
-        precio = (TextView)findViewById(R.id.textViewPrecio);// Continente
+        precio = (TextView)findViewById(R.id.textViewPrecio);// Destino
         peso = (TextView)findViewById(R.id.textViewPeso);
 
         registerForContextMenu(imageViewContinente);
@@ -103,7 +108,7 @@ public class resumen extends ActionBarActivity {
 
 
             /* PEDIDO */
-            Continente contSelected = (Continente)getIntent().getSerializableExtra("objetoContinente");
+            Destino contSelected = (Destino)getIntent().getSerializableExtra("objetoContinente");
             contSelected.getNombre();
 
             String continenteStr = contSelected.getNombre();
@@ -123,30 +128,61 @@ public class resumen extends ActionBarActivity {
             continente.setText("Zona " + zonaStr + ": " + continenteStr + " /€");
             imageViewContinente.setImageResource(contSelected.getImagen());
 
-            //Abrimos la base de datos 'DBUsuarios' en modo escritura
-            UsuariosSQLiteHelper usuariosHelper = new UsuariosSQLiteHelper(this, "DBUsuarios", null, 1);
-            PedidosSQLiteHelper pedidosHelper = new PedidosSQLiteHelper(this, "DBPedidos", null, 1);
+            //Abrimos la base de datosActivity 'DBUsuarios' en modo escritura
+            /*UsuariosSQLiteHelper usuariosHelper = new UsuariosSQLiteHelper(this, "DBEnvios", null, 1);
+            PedidosSQLiteHelper pedidosHelper = new PedidosSQLiteHelper(this, "DBEnvios", null, 1);
 
             SQLiteDatabase dbUsuarios = usuariosHelper.getWritableDatabase();
-            SQLiteDatabase dbPedidos = pedidosHelper.getWritableDatabase();
+            SQLiteDatabase dbPedidos = pedidosHelper.getWritableDatabase();*/
 
-            //Si hemos abierto correctamente la base de datos
-            if (dbUsuarios != null){
-                //Insertamos los datos en la tabla Usuarios
-                dbUsuarios.execSQL("INSERT INTO usuarios ( nombre, dni, apellido1, apellido2, comAut, provincia, localidad, direccion, email ) " +
+            enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
+            SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
+
+            Usuario u1 = new Usuario(dniStr, emailStr, direccionStr, provinciaStr, localidadStr, apellido1Str, apellido2Str, comAutStr, nombreStr);
+
+            enviosHelper.crearUsuario(u1);
+
+            //Si hemos abierto correctamente la base de datosActivity
+
+            /*if (dbEnvios != null){
+                //Insertamos los datosActivity en la tabla Usuarios
+                dbEnvios.execSQL("INSERT INTO usuarios ( nombre, dni, apellido1, apellido2, comAut, provincia, localidad, direccion, email ) " +
                         "VALUES ( '" + nombreStr + "','" + dniStr + "' ,'" + apellido1Str + "', '" + apellido2Str + "', '" + comAutStr + "', '" + provinciaStr + "', '" + localidadStr + "', '" + direccionStr + "', '" + emailStr + "');");
-            }
-            if (dbPedidos != null){
-                dbPedidos.execSQL("INSERT INTO pedidos ( usuarioDNI, zonaID, peso, tarifaPeso ) " +
+            }*/
+            if (dbEnvios != null){
+                dbEnvios.execSQL("INSERT INTO pedidos ( usuarioDNI, zonaID, peso, tarifaPeso ) " +
                         "VALUES ( '" + dniStr + "', '" + zonaStr + "', '" + pesoStr + "', '" + tarifaPesoStr + "');");
             }
 
-            //Cerramos la base de datos
-            dbUsuarios.close();
-            dbPedidos.close();
+            //PedidosSQLiteHelper sqliteHelper = new PedidosSQLiteHelper(this, "DBPedidos", null, 1);
+            //SQLiteDatabase bd = pedidosHelper.getReadableDatabase();
 
-        }
+                if(dbEnvios != null) {
+                    Cursor cursor = dbEnvios.rawQuery("SELECT * FROM Pedidos", null);
+                    int cantidad = cursor.getCount();
+                    int i = 0;
+                    String[] pedidos = new String[cantidad];
 
+                    if (cursor.moveToFirst()) {
+                        do {
+                            String linea = cursor.getInt(0) + " - " + cursor.getString(1) + "\n" + cursor.getString(2)
+                                    + "\n" + cursor.getString(3) + "\n";
+                            pedidos[i] = linea;
+                            i++;
+                        } while (cursor.moveToNext());
+                    }
+
+                    //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, pedidos);
+                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.pedidos_view, pedidos);
+                    ListView lista = (ListView) findViewById(R.id.listViewMisPedidos);
+                    lista.setAdapter(adapter);
+
+                    cursor.close();
+                    //dbEnvios.close();
+                }
+            //Cerramos la base de datosActivity
+            dbEnvios.close();
+        }// if extras!=null
     }// onCreate
 
     @Override
@@ -166,7 +202,7 @@ public class resumen extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
             Intent intentMain = new Intent(resumen.this ,
-                    about.class);
+                    aboutActivity.class);
             startActivity(intentMain);
             return true;
         }
@@ -196,34 +232,6 @@ public class resumen extends ActionBarActivity {
     }
 
 
-
-    public class usuariosAdapter extends CursorAdapter {
-        public usuariosAdapter(Context context, Cursor cursor, int flags) {
-            super(context, cursor, 0);
-        }
-
-        // The newView method is used to inflate a new view and return it,
-        // you don't bind any data to the view at this point.
-        @Override
-        public View newView(Context context, Cursor cursor, ViewGroup parent) {
-            return LayoutInflater.from(context).inflate(R.layout.usuarios_view, parent, false);
-        }
-
-        // The bindView method is used to bind all data to a given view
-        // such as setting the text on a TextView.
-        @Override
-        public void bindView(View view, Context context, Cursor cursor) {
-            // Find fields to populate in inflated template
-            TextView tvBody = (TextView) view.findViewById(R.id.nombre);
-            TextView tvPriority = (TextView) view.findViewById(R.id.dni);
-            // Extract properties from cursor
-            String body = cursor.getString(cursor.getColumnIndexOrThrow("body"));
-            int priority = cursor.getInt(cursor.getColumnIndexOrThrow("priority"));
-            // Populate fields with extracted properties
-            tvBody.setText(body);
-            tvPriority.setText(String.valueOf(priority));
-        }
-    }
 
 
 }

@@ -39,7 +39,7 @@ public class UsuariosSQLiteHelper extends SQLiteOpenHelper {
         //Se elimina la versión anterior de la tabla
         db.execSQL("DROP TABLE IF EXISTS usuarios");
 
-        //Se crea la nueva versión de la tabla vacía de datos
+        //Se crea la nueva versión de la tabla vacía de datosActivity
         db.execSQL(sqlCreate);
     }
 }

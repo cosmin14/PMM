@@ -11,7 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class about extends ActionBarActivity {
+public class aboutActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,8 +35,8 @@ public class about extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_inicio) {
-            Intent intentMain = new Intent(about.this ,
-                    pedido.class);
+            Intent intentMain = new Intent(aboutActivity.this ,
+                    pedidoActivity.class);
             startActivity(intentMain);
             return true;
         }

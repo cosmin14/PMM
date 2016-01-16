@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Created by Jorgi on 07/01/2016.
  */
-public class Continente implements Serializable {
+public class Destino implements Serializable {
 
     private int id;
     private String nombre;
@@ -13,7 +13,7 @@ public class Continente implements Serializable {
     private int precio;
     private int imagen;
 
-    public Continente(int id, String nombre, int zona, int precio, int imagen) {
+    public Destino(int id, String nombre, int zona, int precio, int imagen) {
         this.id = id;
         this.nombre = nombre;
         this.zona = zona;

@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 
-public class datos extends ActionBarActivity {
+public class datosActivity extends ActionBarActivity {
 
     Spinner spinnerComAut, spinnerProvincia;
     ArrayAdapter<CharSequence> aa_com_val;
@@ -66,7 +66,7 @@ public class datos extends ActionBarActivity {
                 miBundle.putString("direccion", direccion+"");
                 miBundle.putString("email", email+"");
                 miBundle.putString("dni", dni+"");
-                i.putExtras(miBundle); // Guardo los datos en el bundle
+                i.putExtras(miBundle); // Guardo los datosActivity en el bundle
                 i.putExtras(extras);  // Guardo el bundle recogido anteriormente este nuevo bundle creado
                 startActivity(i);
             }
@@ -92,8 +92,8 @@ public class datos extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            Intent intentMain = new Intent(datos.this ,
-                    about.class);
+            Intent intentMain = new Intent(datosActivity.this ,
+                    aboutActivity.class);
             startActivity(intentMain);
             return true;
         }

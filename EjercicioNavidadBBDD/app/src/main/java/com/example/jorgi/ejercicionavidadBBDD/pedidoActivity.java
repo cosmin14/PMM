@@ -2,6 +2,7 @@ package com.example.jorgi.ejercicionavidadBBDD;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
@@ -21,7 +22,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class pedido extends ActionBarActivity {
+public class pedidoActivity extends ActionBarActivity {
 
     Spinner spinnerZona;
     private SeekBar seekBar;
@@ -40,13 +41,12 @@ public class pedido extends ActionBarActivity {
     Button btnEnviar;
     ImageView img;
 
-    private Continente[] continentes =
-            new Continente[] {
-                    new Continente(0, "Europa", 1, 10, R.drawable.europa),
-                    new Continente(1, "America", 2, 20, R.drawable.america),
-                    new Continente(2, "Africa", 2, 20, R.drawable.africa),
-                    new Continente(3, "Asia", 3, 30, R.drawable.asia),
-                    new Continente(4, "Oceania", 3, 30, R.drawable.oceania),
+    private Destino[] destinos = {
+                    new Destino(0, "Europa", 1, 10, R.drawable.europa),
+                    new Destino(1, "America", 2, 20, R.drawable.america),
+                    new Destino(2, "Africa", 2, 20, R.drawable.africa),
+                    new Destino(3, "Asia", 3, 30, R.drawable.asia),
+                    new Destino(4, "Oceania", 3, 30, R.drawable.oceania),
             };
 
 
@@ -54,6 +54,17 @@ public class pedido extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pedido);
+
+        EnviosSQLiteHelper enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
+        SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
+
+        if (dbEnvios == null) {
+            for (int i = 0; i < destinos.length; i++) {
+                //Insertamos los datosActivity en la tabla Usuarios
+                dbEnvios.execSQL("INSERT INTO `destinos` ( codigo, zona, nombre, tarifaDestino ) " +
+                        "VALUES ( '" + destinos[i].getId() + "','" + destinos[i].getZona() + "' ,'" + destinos[i].getNombre() + "', '" + destinos[i].getPrecio() + "');");
+            }
+        }
 
         img = (ImageView)findViewById(R.id.imageView);
         btnEnviar = (Button)findViewById(R.id.buttonEnviar);
@@ -164,9 +175,9 @@ public class pedido extends ActionBarActivity {
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), datos.class);
+                Intent i = new Intent(getApplicationContext(), datosActivity.class);
                 Bundle miBundle = new Bundle();
-                miBundle.putSerializable("objetoContinente", continentes[idContinente]);
+                miBundle.putSerializable("objetoContinente", destinos[idContinente]);
                 miBundle.putString("precio", precio + "");
                 miBundle.putString("peso", peso + "");
                 miBundle.putString("envio",envio+"");
@@ -196,8 +207,8 @@ public class pedido extends ActionBarActivity {
         int id = item.getItemId();
 
         if (id == R.id.action_about) {
-            Intent intentMain = new Intent(pedido.this ,
-                    about.class);
+            Intent intentMain = new Intent(pedidoActivity.this ,
+                    aboutActivity.class);
             startActivity(intentMain);
             return true;
         }
@@ -212,7 +223,7 @@ public class pedido extends ActionBarActivity {
      */
 
     private void cambiarImagenMundo(int id){
-        img.setImageResource(continentes[id].getImagen());
+        img.setImageResource(destinos[id].getImagen());
     }
 
 
@@ -220,7 +231,7 @@ public class pedido extends ActionBarActivity {
 
 
     public void showToast(String text){
-        Toast.makeText(pedido.this, text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(pedidoActivity.this, text, Toast.LENGTH_SHORT).show();
     }
 
     public void showPrecio(double total){
@@ -229,19 +240,19 @@ public class pedido extends ActionBarActivity {
         textViewPrecioFinal.setText("Precio: " + total + "€");
     }
     public void calcularPrecio(){
-        Continente cont1 = continentes[idContinente];
+        Destino cont1 = destinos[idContinente];
         precio = cont1.getPrecio();
         precioFinal = precio + (tarifaPeso * peso) * envio;
         showPrecio(precioFinal);
     }
 
 
-    class AdaptadorZona extends ArrayAdapter<Continente> {
+    class AdaptadorZona extends ArrayAdapter<Destino> {
 
         public Activity context;
 
         public AdaptadorZona(Activity context) {
-            super(context, R.layout.continente_view, continentes);
+            super(context, R.layout.continente_view, destinos);
             this.context = context;
         }
 
@@ -258,9 +269,9 @@ public class pedido extends ActionBarActivity {
             TextView lblContinente = (TextView) item.findViewById(R.id.lblContinente);
             TextView lblPrecio = (TextView) item.findViewById(R.id.lblPrecio);
 
-            lblZona.setText("Zona "+continentes[position].getZona());
-            lblContinente.setText(""+continentes[position].getNombre());
-            lblPrecio.setText(""+continentes[position].getPrecio()+"€");
+            lblZona.setText("Zona "+ destinos[position].getZona());
+            lblContinente.setText(""+ destinos[position].getNombre());
+            lblPrecio.setText(""+ destinos[position].getPrecio()+"€");
 
             return (item);
         }
@@ -279,7 +290,7 @@ public class pedido extends ActionBarActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_context1:
-                Intent intentMain = new Intent(pedido.this ,informacion.class);
+                Intent intentMain = new Intent(pedidoActivity.this ,informacion.class);
                 startActivity(intentMain);
                 return true;
             default:
