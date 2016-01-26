@@ -1,7 +1,10 @@
 package com.example.jorgi.ejercicionavidadBBDD;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -40,13 +43,14 @@ public class pedidoActivity extends ActionBarActivity {
     RadioGroup radioGroup;
     Button btnEnviar;
     ImageView img;
+    int estadoSesion = 0; //0 no logueado - 1 logeado
 
     private Destino[] destinos = {
-                    new Destino(0, "Europa", 1, 10, R.drawable.europa),
-                    new Destino(1, "America", 2, 20, R.drawable.america),
-                    new Destino(2, "Africa", 2, 20, R.drawable.africa),
-                    new Destino(3, "Asia", 3, 30, R.drawable.asia),
-                    new Destino(4, "Oceania", 3, 30, R.drawable.oceania),
+                    new Destino(0, "Europa", "1", 10, R.drawable.europa),
+                    new Destino(1, "America", "2", 20, R.drawable.america),
+                    new Destino(2, "Africa", "2", 20, R.drawable.africa),
+                    new Destino(3, "Asia", "3", 30, R.drawable.asia),
+                    new Destino(4, "Oceania", "3", 30, R.drawable.oceania),
             };
 
 
@@ -55,16 +59,27 @@ public class pedidoActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pedido);
 
-        EnviosSQLiteHelper enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
-        SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
+        final Bundle extras = getIntent().getExtras(); // Recogo el bundle de la actividad anterior
 
-        if (dbEnvios == null) {
-            for (int i = 0; i < destinos.length; i++) {
-                //Insertamos los datosActivity en la tabla Usuarios
-                dbEnvios.execSQL("INSERT INTO `destinos` ( codigo, zona, nombre, tarifaDestino ) " +
-                        "VALUES ( '" + destinos[i].getId() + "','" + destinos[i].getZona() + "' ,'" + destinos[i].getNombre() + "', '" + destinos[i].getPrecio() + "');");
-            }
+        EnviosSQLiteHelper enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
+        //SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
+
+        int numDestinos = enviosHelper.getCountDestinos();
+
+        for (int i = 0; i < destinos.length; i++){
+            Destino d = new Destino( destinos[i].getNombre(), destinos[i].getZona(), destinos[i].getPrecio(), destinos[i].getImagen() );
+            d.getNombre();
+            enviosHelper.crearDestino(d);
         }
+
+
+        /*if (numDestinos == 0){
+            for (int i = 0; i < destinos.length; i++){
+                Destino d = new Destino( destinos[i].getNombre(), destinos[i].getZona(), destinos[i].getPrecio(), destinos[i].getImagen() );
+                d.getNombre();
+                enviosHelper.crearDestino(d);
+            }
+        }*/
 
         img = (ImageView)findViewById(R.id.imageView);
         btnEnviar = (Button)findViewById(R.id.buttonEnviar);
@@ -105,8 +120,6 @@ public class pedidoActivity extends ActionBarActivity {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 //la Seekbar siempre empieza en cero, si queremos que el valor mínimo sea otro podemos modificarlo
                 //Toast toast1 = Toast.makeText(Pedido.this, ""+progress, Toast.LENGTH_SHORT);
-                //toast1.show();
-                //peso = ((float)progress / 10.0);
                 peso = (progress / 10.0);
                 textViewPeso.setText("" + peso + "Kg");
 
@@ -170,12 +183,15 @@ public class pedidoActivity extends ActionBarActivity {
         });
         //                      /SPINNER
 
+        Usuario userLoged = (Usuario)extras.getSerializable("usuario");
+        //Toast.makeText(pedidoActivity.this, "Usuario logeado: "+userLoged.getNombre(), Toast.LENGTH_LONG).show();
 
 
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(), datosActivity.class);
+
+                Intent i = new Intent(getApplicationContext(), resumenActivity.class);
                 Bundle miBundle = new Bundle();
                 miBundle.putSerializable("objetoContinente", destinos[idContinente]);
                 miBundle.putString("precio", precio + "");
@@ -183,8 +199,8 @@ public class pedidoActivity extends ActionBarActivity {
                 miBundle.putString("envio",envio+"");
                 miBundle.putString("tarifaPeso", tarifaPeso+"");
                 miBundle.putString("precioFinal", precioFinal+"");
-
                 i.putExtras(miBundle);
+                i.putExtras(extras);
                 startActivity(i);
             }
         });
@@ -194,11 +210,20 @@ public class pedidoActivity extends ActionBarActivity {
 
 
 
+    private static final int MENU_LOGOUT = Menu.FIRST;
+    private static final int MENU_LOGIN = Menu.FIRST + 1;
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_pedido, menu);
+
+        MenuItem login = menu.findItem(R.id.action_login);
+        MenuItem logout = menu.findItem(R.id.action_logout);
+
+        login.setVisible(false);
+        logout.setVisible(true);
+
         return true;
     }
 
@@ -206,9 +231,20 @@ public class pedidoActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+
         if (id == R.id.action_about) {
-            Intent intentMain = new Intent(pedidoActivity.this ,
-                    aboutActivity.class);
+            Intent intentMain = new Intent(pedidoActivity.this , aboutActivity.class);
+            startActivity(intentMain);
+            return true;
+        }else if (id == R.id.action_login ){
+            Intent intentMain = new Intent(pedidoActivity.this , loginActivity.class);
+            startActivity(intentMain);
+            return true;
+        }else if (id == R.id.action_logout){
+            prefs.edit().clear().commit();
+            loginActivity.logged = false;
+            Intent intentMain = new Intent(pedidoActivity.this , loginActivity.class);
             startActivity(intentMain);
             return true;
         }
@@ -226,13 +262,6 @@ public class pedidoActivity extends ActionBarActivity {
         img.setImageResource(destinos[id].getImagen());
     }
 
-
-
-
-
-    public void showToast(String text){
-        Toast.makeText(pedidoActivity.this, text, Toast.LENGTH_SHORT).show();
-    }
 
     public void showPrecio(double total){
         total = Math.round(total * 100);
@@ -290,7 +319,7 @@ public class pedidoActivity extends ActionBarActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_context1:
-                Intent intentMain = new Intent(pedidoActivity.this ,informacion.class);
+                Intent intentMain = new Intent(pedidoActivity.this ,informacionActivity.class);
                 startActivity(intentMain);
                 return true;
             default:

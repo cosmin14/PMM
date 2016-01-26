@@ -3,7 +3,7 @@ package com.example.jorgi.ejercicionavidadBBDD;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 
-public class informacion extends ActionBarActivity {
+public class informacionActivity extends ActionBarActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -1,6 +1,7 @@
 package com.example.jorgi.ejercicionavidadBBDD;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -11,8 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-public class datosActivity extends ActionBarActivity {
+public class usuarioActivity extends ActionBarActivity {
 
     Spinner spinnerComAut, spinnerProvincia;
     ArrayAdapter<CharSequence> aa_com_val;
@@ -20,19 +22,25 @@ public class datosActivity extends ActionBarActivity {
     ArrayAdapter<CharSequence> aa_andalucia;
     ArrayAdapter<CharSequence> aa_default;
     Button btnEnviar;
-    String nombre, apellido1, apellido2, comAut, provincia, localidad, direccion, email, dni;
+    String nombre, apellido1, apellido2, comAut, provincia, localidad, direccion, email, dni, pass, pass2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_datos);
+        setContentView(R.layout.activity_usuario);
 
         spinnerComAut = (Spinner) findViewById(R.id.spinnerComAut);
         spinnerComAut.setOnItemSelectedListener(new SpinnerListener());
 
-        final Bundle extras = getIntent().getExtras(); // Recogo el bundle de la actividad anterior
+        //final Bundle extras = getIntent().getExtras(); // Recogo el bundle de la actividad anterior
+        //int bundleSize = extras.size();
+
+        //Toast.makeText(usuarioActivity.this, "Bundle size: "+bundleSize, Toast.LENGTH_SHORT).show();
 
         btnEnviar = (Button)findViewById(R.id.buttonEnviarDatos);
+
+        final EnviosSQLiteHelper enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
+        SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
 
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -51,11 +59,16 @@ public class datosActivity extends ActionBarActivity {
                     email = editEmail.getText().toString();
                 EditText editDNI = (EditText)findViewById(R.id.editTextDNI);
                     dni = editDNI.getText().toString();
+                EditText editPass1 = (EditText)findViewById(R.id.editTextPass);
+                    pass = editPass1.getText().toString();
+                EditText editPass2 = (EditText)findViewById(R.id.editTextPass2);
+                    pass2 = editPass2.getText().toString();
+
 
                 comAut = spinnerComAut.getSelectedItem().toString();
 
-
-                Intent i = new Intent(getApplicationContext(), resumen.class);
+                Usuario usuario = new Usuario(dni,email,direccion,provincia,localidad,apellido1,apellido2,comAut,nombre,pass);
+                /*Intent i = new Intent(getApplicationContext(), resumenActivity.class);
                 Bundle miBundle = new Bundle();
                 miBundle.putString("nombre", nombre+"");
                 miBundle.putString("apellido1", apellido1+"");
@@ -66,9 +79,25 @@ public class datosActivity extends ActionBarActivity {
                 miBundle.putString("direccion", direccion+"");
                 miBundle.putString("email", email+"");
                 miBundle.putString("dni", dni+"");
-                i.putExtras(miBundle); // Guardo los datosActivity en el bundle
+                miBundle.putString("pass", pass);
+                miBundle.putString("pass2", pass2);
+                miBundle.putSerializable("usuarioRegistro", usuario);
+                i.putExtras(miBundle); // Guardo los usuarioActivity en el bundle
                 i.putExtras(extras);  // Guardo el bundle recogido anteriormente este nuevo bundle creado
-                startActivity(i);
+                startActivity(i);*/
+
+                long user = enviosHelper.crearUsuario(usuario);
+
+                Toast.makeText(usuarioActivity.this, ""+user, Toast.LENGTH_SHORT).show();
+
+                if (user > 0){
+                    Intent i = new Intent(getApplicationContext(), pedidoActivity.class);
+                    Bundle miBundle = new Bundle();
+                    miBundle.putSerializable("usuario", usuario);
+                    i.putExtras(miBundle);
+                    startActivity(i);
+                }
+
             }
         });
 
@@ -92,7 +121,7 @@ public class datosActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            Intent intentMain = new Intent(datosActivity.this ,
+            Intent intentMain = new Intent(usuarioActivity.this ,
                     aboutActivity.class);
             startActivity(intentMain);
             return true;

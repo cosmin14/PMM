@@ -1,9 +1,11 @@
 package com.example.jorgi.ejercicionavidadBBDD;
 
+import java.io.Serializable;
+
 /**
  * Created by Jorgi on 16/01/2016.
  */
-public class Usuario {
+public class Usuario implements Serializable{
 
     private int codigo;
     private String nombre;
@@ -15,8 +17,9 @@ public class Usuario {
     private String localidad;
     private String direccion;
     private String email;
+    private String password;
 
-    public Usuario(String dni, String email, String direccion, String provincia, String localidad, String apellido1, String apellido2, String comAut, String nombre) {
+    public Usuario(String dni, String email, String direccion, String provincia, String localidad, String apellido1, String apellido2, String comAut, String nombre, String password) {
         this.email = email;
         this.direccion = direccion;
         this.provincia = provincia;
@@ -26,6 +29,20 @@ public class Usuario {
         this.comAut = comAut;
         this.nombre = nombre;
         this.dni = dni;
+        this.password = password;
+    }
+    public Usuario(int codigo, String dni, String email, String direccion, String provincia, String localidad, String apellido1, String apellido2, String comAut, String nombre, String password) {
+        this.codigo = codigo;
+        this.email = email;
+        this.direccion = direccion;
+        this.provincia = provincia;
+        this.localidad = localidad;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.comAut = comAut;
+        this.nombre = nombre;
+        this.dni = dni;
+        this.password = password;
     }
 
     public Usuario() {
@@ -74,6 +91,10 @@ public class Usuario {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
 
                                             /* SETTERS*/
 
@@ -116,4 +137,19 @@ public class Usuario {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+
+    public boolean validateLogin(String email, String password, String emailValidate, String passwordValidate){
+        if (email.equalsIgnoreCase(emailValidate) && password.equals(passwordValidate)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+
 }

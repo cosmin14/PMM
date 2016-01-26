@@ -9,8 +9,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".pedidoActivity"
-            android:label="@string/app_name">
+            android:name=".loginActivity"
+            android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,18 +18,22 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".usuarioActivity"
+            android:label="@string/title_activity_datos">
+        </activity>
+        <activity
+            android:name=".pedidoActivity"
+            android:label="@string/app_name">
+        </activity>
+        <activity
             android:name=".aboutActivity"
             android:label="@string/title_activity_about" />
         <activity
-            android:name=".datosActivity"
-            android:label="@string/title_activity_datos" />
-        <activity
-            android:name="com.example.jorgi.ejercicionavidadBBDD.resumen"
+            android:name=".resumenActivity"
             android:label="@string/title_activity_resumen" />
         <activity
-            android:name="com.example.jorgi.ejercicionavidadBBDD.informacion"
+            android:name=".informacionActivity"
             android:label="@string/title_activity_informacion" />
-
     </application>
 
 </manifest>

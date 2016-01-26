@@ -68,7 +68,7 @@ public class aboutActivity extends ActionBarActivity {
             lienzo.drawLine(ancho, altura * 5, width / 2, altura * 8, miPincel);
             lienzo.drawLine(width/2, altura * 8, ancho * 4, altura * 5, miPincel);
 
-            miPincel.setStrokeWidth(5);
+            miPincel.setStrokeWidth(2);
             miPincel.setTextSize(60);
             lienzo.drawText("Empresa de envio", ancho, altura*18, miPincel);
             lienzo.drawText("®cosmin", ancho, altura* 19, miPincel);

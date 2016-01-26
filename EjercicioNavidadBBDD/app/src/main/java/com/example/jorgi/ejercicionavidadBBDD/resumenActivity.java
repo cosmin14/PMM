@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,11 +17,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
-public class resumen extends ActionBarActivity {
+import java.util.List;
+
+public class resumenActivity extends ActionBarActivity {
 
     /* DATOS */
-    TextView  nombre, apellido1, apellido2, comAut, provincia, localidad, direccion, email, dni;
+    TextView  nombre, apellido1, apellido2, comAut, provincia, localidad, direccion, email, dni, pass;
 
     /* PEDIDO */
     TextView continente, envio, tarifaPeso, precio, peso;
@@ -66,6 +70,7 @@ public class resumen extends ActionBarActivity {
         direccion = (TextView)findViewById(R.id.textViewDireccion);
         email = (TextView)findViewById(R.id.textViewEmail);
         dni = (TextView)findViewById(R.id.textViewDNI);
+        pass = (TextView)findViewById(R.id.textViewPass);
 
 
 
@@ -78,33 +83,27 @@ public class resumen extends ActionBarActivity {
         precio = (TextView)findViewById(R.id.textViewPrecio);// Destino
         peso = (TextView)findViewById(R.id.textViewPeso);
 
+
+        // Menu contextual - Asigno el menu contextual a la imagen
         registerForContextMenu(imageViewContinente);
 
         final Bundle extras = getIntent().getExtras();
         if (extras != null) {
 
-
             /* DATOS */
-            String nombreStr = extras.getString("nombre");
-            String apellido1Str = extras.getString("apellido1");
-            String apellido2Str = extras.getString("apellido2");
-            String comAutStr = extras.getString("comAut");
-            String provinciaStr = extras.getString("provincia");
-            String localidadStr = extras.getString("localidad");
-            String direccionStr = extras.getString("direccion");
-            String emailStr = extras.getString("email");
-            String dniStr = extras.getString("dni");
 
-            nombre.setText(nombreStr);
-            apellido1.setText(apellido1Str);
-            apellido2.setText(apellido2Str);
-            comAut.setText(comAutStr);
-            provincia.setText(provinciaStr);
-            localidad.setText(localidadStr);
-            direccion.setText(direccionStr);
-            email.setText(emailStr);
-            dni.setText(dniStr);
+            Usuario u = (Usuario)extras.getSerializable("usuario");
 
+            nombre.setText(u.getNombre());
+            apellido1.setText(u.getApellido1());
+            apellido2.setText(u.getApellido2());
+            comAut.setText(u.getComAut());
+            provincia.setText(u.getProvincia());
+            localidad.setText(u.getLocalidad());
+            direccion.setText(u.getDireccion());
+            email.setText(u.getEmail());
+            dni.setText(u.getDni());
+            pass.setText(u.getPassword());
 
 
             /* PEDIDO */
@@ -112,7 +111,7 @@ public class resumen extends ActionBarActivity {
             contSelected.getNombre();
 
             String continenteStr = contSelected.getNombre();
-            int zonaStr = contSelected.getZona();
+            String zonaStr = contSelected.getZona();
             double precioStr = contSelected.getPrecio();
             String tarifaPesoStr = extras.getString("tarifaPeso");
             String envioStr = extras.getString("envio");
@@ -128,59 +127,50 @@ public class resumen extends ActionBarActivity {
             continente.setText("Zona " + zonaStr + ": " + continenteStr + " /€");
             imageViewContinente.setImageResource(contSelected.getImagen());
 
-            //Abrimos la base de datosActivity 'DBUsuarios' en modo escritura
-            /*UsuariosSQLiteHelper usuariosHelper = new UsuariosSQLiteHelper(this, "DBEnvios", null, 1);
-            PedidosSQLiteHelper pedidosHelper = new PedidosSQLiteHelper(this, "DBEnvios", null, 1);
-
-            SQLiteDatabase dbUsuarios = usuariosHelper.getWritableDatabase();
-            SQLiteDatabase dbPedidos = pedidosHelper.getWritableDatabase();*/
+            /* SQLHelper */
 
             enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
             SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
 
-            Usuario u1 = new Usuario(dniStr, emailStr, direccionStr, provinciaStr, localidadStr, apellido1Str, apellido2Str, comAutStr, nombreStr);
+            Pedido p1 = new Pedido(u.getDni(), zonaStr, pesoStr, tarifaPesoStr);
+            enviosHelper.crearPedido(p1);
 
-            enviosHelper.crearUsuario(u1);
+            Toast.makeText(resumenActivity.this, "DNI: "+u.getDni(), Toast.LENGTH_SHORT).show();
 
-            //Si hemos abierto correctamente la base de datosActivity
-
-            /*if (dbEnvios != null){
-                //Insertamos los datosActivity en la tabla Usuarios
-                dbEnvios.execSQL("INSERT INTO usuarios ( nombre, dni, apellido1, apellido2, comAut, provincia, localidad, direccion, email ) " +
-                        "VALUES ( '" + nombreStr + "','" + dniStr + "' ,'" + apellido1Str + "', '" + apellido2Str + "', '" + comAutStr + "', '" + provinciaStr + "', '" + localidadStr + "', '" + direccionStr + "', '" + emailStr + "');");
-            }*/
-            if (dbEnvios != null){
-                dbEnvios.execSQL("INSERT INTO pedidos ( usuarioDNI, zonaID, peso, tarifaPeso ) " +
-                        "VALUES ( '" + dniStr + "', '" + zonaStr + "', '" + pesoStr + "', '" + tarifaPesoStr + "');");
+            List<Pedido> todosPedidos = enviosHelper.getAllPedidosUsuario(u.getDni());
+            String[] pedidos = new String[todosPedidos.size()];
+            int num = 0;
+            for (Pedido pedido : todosPedidos) {
+                String linea = pedido.getCodigo() + " - Nombre: " + u.getNombre() + "\n Zona: " + pedido.getZonaId();
+                pedidos[num] = linea;
+                num++;
             }
 
-            //PedidosSQLiteHelper sqliteHelper = new PedidosSQLiteHelper(this, "DBPedidos", null, 1);
-            //SQLiteDatabase bd = pedidosHelper.getReadableDatabase();
 
-                if(dbEnvios != null) {
-                    Cursor cursor = dbEnvios.rawQuery("SELECT * FROM Pedidos", null);
+                /*if(dbEnvios != null) {
+                    Cursor cursor = dbEnvios.rawQuery("SELECT * FROM pedidos WHERE usuarioDNI LIKE '" + dniStr + "'", null);
                     int cantidad = cursor.getCount();
                     int i = 0;
-                    String[] pedidos = new String[cantidad];
+
 
                     if (cursor.moveToFirst()) {
                         do {
                             String linea = cursor.getInt(0) + " - " + cursor.getString(1) + "\n" + cursor.getString(2)
-                                    + "\n" + cursor.getString(3) + "\n";
+                                    + "\n" + cursor.getString(3) + "\n" + cursor.getString(4);
                             pedidos[i] = linea;
                             i++;
                         } while (cursor.moveToNext());
-                    }
+                    }*/
 
-                    //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, pedidos);
-                    ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.pedidos_view, pedidos);
-                    ListView lista = (ListView) findViewById(R.id.listViewMisPedidos);
-                    lista.setAdapter(adapter);
+            //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, pedidos);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.pedidos_view, pedidos);
+            ListView lista = (ListView) findViewById(R.id.listViewMisPedidos);
+            lista.setAdapter(adapter);
 
-                    cursor.close();
+                    //cursor.close();
                     //dbEnvios.close();
-                }
-            //Cerramos la base de datosActivity
+                //}
+            //Cerramos la base de usuarioActivity
             dbEnvios.close();
         }// if extras!=null
     }// onCreate
@@ -201,7 +191,7 @@ public class resumen extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            Intent intentMain = new Intent(resumen.this ,
+            Intent intentMain = new Intent(resumenActivity.this ,
                     aboutActivity.class);
             startActivity(intentMain);
             return true;
@@ -223,7 +213,7 @@ public class resumen extends ActionBarActivity {
 
         switch (item.getItemId()) {
             case R.id.menu_context1:
-                Intent intentMain = new Intent(resumen.this ,informacion.class);
+                Intent intentMain = new Intent(resumenActivity.this ,informacionActivity.class);
                 startActivity(intentMain);
                 return true;
             default:

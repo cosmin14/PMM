@@ -11,8 +11,7 @@ public class Pedido {
     private String peso;
     private String tarifaPeso;
 
-    public Pedido(int codigo, String usuarioDNI, String zonaId, String peso, String tarifaPeso) {
-        this.codigo = codigo;
+    public Pedido( String usuarioDNI, String zonaId, String peso, String tarifaPeso ) {
         this.usuarioDNI = usuarioDNI;
         this.zonaId = zonaId;
         this.peso = peso;

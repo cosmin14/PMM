@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,13 +22,13 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
 
     // Table Names
     private static final String TABLA_USUARIOS = "usuarios";
-    private static final String TABLA_ENVIOS = "envios";
+    private static final String TABLA_DESTINOS = "destinos";
     private static final String TABLA_PEDIDOS = "pedidos";
 
 
     private static final String KEY_CODIGO = "codigo";
 
-    // NOTES usuarios - column names
+    // usuarios - columnas
 
     private static final String USUARIO_CODIGO = KEY_CODIGO;
     private static final String USUARIO_DNI = "dni";
@@ -38,6 +40,29 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
     private static final String USUARIO_LOCALIDAD = "localidad";
     private static final String USUARIO_DIRECCION = "direccion";
     private static final String USUARIO_EMAIL = "email";
+    private static final String USUARIO_PASS = "pass";
+
+    private static final String[] COLUMNAS_USUARIO = {USUARIO_CODIGO,USUARIO_DNI,USUARIO_NOMBRE,USUARIO_APELLIDO1,USUARIO_APELLIDO2,USUARIO_COMAUT,USUARIO_PROVINCIA,USUARIO_LOCALIDAD,USUARIO_DIRECCION,USUARIO_EMAIL};
+
+
+    // pedidos - columnas
+
+    private static final String PEDIDO_CODIGO = KEY_CODIGO;
+    private static final String PEDIDO_USUARIODNI = "usuarioDNI";
+    private static final String PEDIDO_ZONAID = "zonaId";
+    private static final String PEDIDO_PESO = "peso";
+    private static final String PEDIDO_TARIFAPESO = "tarifaPeso";
+
+
+    // destinos - columnas
+    // int id, String nombre, String zona, int precio, int imagen
+
+    private static final String DESTINO_CODIGO = KEY_CODIGO;
+    private static final String DESTINO_NOMBRE = "nombre";
+    private static final String DESTINO_ZONA = "zona";
+    private static final String DESTINO_PRECIO = "precio";
+    private static final String DESTINO_IMAGEN = "imagen";
+
 
 
     //Sentencia SQL para crear la tabla de Destinos
@@ -45,21 +70,13 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
             "  `"+KEY_CODIGO+"` INTEGER NOT NULL PRIMARY KEY," +
             "  `zona` INTEGER NOT NULL," +
             "  `nombre` TEXT NOT NULL," +
-            "  `tarifaDestino` TEXT NOT NULL" +
-            "  );";
-
-    //Sentencia SQL para crear la tabla de Pedidos
-    String sqlCreatePedidos = "CREATE TABLE IF NOT EXISTS `pedidos` (" +
-            "  `"+KEY_CODIGO+"` INTEGER NOT NULL PRIMARY KEY," +
-            "  `usuarioDNI` TEXT NOT NULL," +
-            "  `zonaId` TEXT NOT NULL," +
-            "  `peso` TEXT NOT NULL," +
-            "  `tarifaPeso` TEXT NOT NULL" +
+            "  `precio` INTEGER NOT NULL," +
+            "  `imagen` INTEGER NOT NULL" +
             "  );";
 
     //Sentencia SQL para crear la tabla de Usuarios
     String sqlCreateUsuarios = "CREATE TABLE IF NOT EXISTS `usuarios` (" +
-            "  `"+USUARIO_CODIGO+"` INTEGER NOT NULL PRIMARY KEY," +
+            "  `"+KEY_CODIGO+"` INTEGER NOT NULL PRIMARY KEY," +
             "  `"+USUARIO_DNI+"` TEXT NOT NULL," +
             "  `"+USUARIO_NOMBRE+"` TEXT NOT NULL," +
             "  `"+USUARIO_APELLIDO1+"` TEXT NOT NULL," +
@@ -68,8 +85,22 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
             "  `"+USUARIO_PROVINCIA+"` TEXT NOT NULL," +
             "  `"+USUARIO_LOCALIDAD+"` TEXT NOT NULL," +
             "  `"+USUARIO_DIRECCION+"` TEXT NOT NULL," +
-            "  `"+USUARIO_EMAIL+"` TEXT NOT NULL" +
+            "  `"+USUARIO_EMAIL+"` TEXT NOT NULL," +
+            "  `"+USUARIO_PASS+"` TEXT NOT NULL" +
             "  );";
+
+    //Sentencia SQL para crear la tabla de Pedidos
+    String sqlCreatePedidos = "CREATE TABLE IF NOT EXISTS `pedidos` (" +
+            "  `"+KEY_CODIGO+"` INTEGER NOT NULL PRIMARY KEY," +
+            "  `usuarioDNI` TEXT NOT NULL," +
+            "  `zonaId` TEXT NOT NULL," +
+            "  `peso` TEXT NOT NULL," +
+            "  `tarifaPeso` TEXT NOT NULL," +
+            "   FOREIGN KEY(`usuarioDNI`) REFERENCES usuarios("+ USUARIO_DNI +")," +
+            "   FOREIGN KEY(`zonaId`) REFERENCES destinos("+ KEY_CODIGO +")" +
+            "  );";
+
+
 
     public EnviosSQLiteHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -77,6 +108,11 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+        db.execSQL("DROP TABLE IF EXISTS usuarios");
+        db.execSQL("DROP TABLE IF EXISTS destinos");
+        db.execSQL("DROP TABLE IF EXISTS pedidos");
+
         db.execSQL(sqlCreateUsuarios);
         db.execSQL(sqlCreateDestinos);
         db.execSQL(sqlCreatePedidos);
@@ -113,7 +149,7 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(USUARIO_CODIGO, usuario.getCodigo());
+        //values.put(USUARIO_CODIGO, usuario.getCodigo());
         values.put(USUARIO_DNI, usuario.getDni());
         values.put(USUARIO_NOMBRE, usuario.getNombre());
         values.put(USUARIO_APELLIDO1, usuario.getApellido1());
@@ -123,6 +159,7 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
         values.put(USUARIO_LOCALIDAD, usuario.getLocalidad());
         values.put(USUARIO_DIRECCION, usuario.getDireccion());
         values.put(USUARIO_EMAIL, usuario.getEmail());
+        values.put(USUARIO_PASS,usuario.getPassword());
 
         // insert row
         long usuario_id = db.insert(TABLA_USUARIOS, null, values);
@@ -138,32 +175,119 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
      * Obtener los datos de un usuario
      *
      */
-    public Usuario getUsuario(long usuario_dni) {
+    //public Usuario getUsuario(String usuario_dni) {
+    public List<Usuario> getUsuario(String usuario_dni) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLA_USUARIOS + " WHERE "
-                + KEY_CODIGO + " = " + usuario_dni;
+        List<Usuario> usuarios = new ArrayList<Usuario>();
 
+        String selectQuery = "SELECT  * FROM " + TABLA_USUARIOS + " WHERE " + USUARIO_DNI + " = '" + usuario_dni + "'";
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null)
-            c.moveToFirst();
+        /*int num = c.getCount();
+        Usuario td = null;
+
+        if (num > 0){
+            if (c != null) {
+                c.moveToFirst();
+                td = new Usuario();
+                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
+                td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
+                td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
+                td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
+                td.setComAut(c.getString(c.getColumnIndex(USUARIO_COMAUT)));
+                td.setProvincia(c.getString(c.getColumnIndex(USUARIO_PROVINCIA)));
+                td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
+                td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
+                td.setEmail(c.getString(c.getColumnIndex(USUARIO_EMAIL)));
+            }
+        }
+        return td;*/
+
+
+        if (c.moveToFirst()) {
+            do {
+                Usuario td = new Usuario();
+                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
+                td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
+                td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
+                td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
+                td.setComAut(c.getString(c.getColumnIndex(USUARIO_COMAUT)));
+                td.setProvincia(c.getString(c.getColumnIndex(USUARIO_PROVINCIA)));
+                td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
+                td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
+                td.setEmail(c.getString(c.getColumnIndex(USUARIO_EMAIL)));
+                td.setPassword(c.getString(c.getColumnIndex(USUARIO_PASS)));
+                // adding to Usuario list
+                usuarios.add(td);
+            } while (c.moveToNext());
+        }
+
+        return usuarios;
+
+
+    }
+
+    public Usuario getUsuarioLogin(String usuario_email) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String selectQuery = "SELECT * FROM " + TABLA_USUARIOS + " WHERE " + USUARIO_EMAIL + " = '" + usuario_email + "'";
+        Cursor c = db.rawQuery(selectQuery,null);
+
+        //String[] args = new String[]{usuario_dni};
+        //String[] campos = new String[]{USUARIO_CODIGO,USUARIO_DNI,USUARIO_NOMBRE,USUARIO_APELLIDO1,USUARIO_APELLIDO2, USUARIO_COMAUT,USUARIO_PROVINCIA,USUARIO_LOCALIDAD,USUARIO_DIRECCION,USUARIO_EMAIL};
+        //Cursor c = db.rawQuery("SELECT * FROM usuarios WHERE dni=?", args);
+        //Cursor c = db.query("usuarios",campos,null,null,null,null,null);
+
 
         Usuario td = new Usuario();
+        Usuario td1 = new Usuario();
+        String email = "";
 
-        td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
-        td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
-        td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
-        td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
-        td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
-        td.setComAut(c.getString(c.getColumnIndex(USUARIO_COMAUT)));
-        td.setProvincia(c.getString(c.getColumnIndex(USUARIO_PROVINCIA)));
-        td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
-        td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
-        td.setEmail(c.getString(c.getColumnIndex(USUARIO_EMAIL)));
+        if (c.moveToFirst()){
+            do {
+                email = c.getString(c.getColumnIndex(USUARIO_EMAIL)).toString();
+                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
+                td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
+                td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
+                td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
+                td.setComAut(c.getString(c.getColumnIndex(USUARIO_COMAUT)));
+                td.setProvincia(c.getString(c.getColumnIndex(USUARIO_PROVINCIA)));
+                td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
+                td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
+                td.setPassword(c.getString(c.getColumnIndex(USUARIO_PASS)));
+                if (email.equalsIgnoreCase(usuario_email)){
+                    td1 = new Usuario(
+                            c.getString(c.getColumnIndex(USUARIO_DNI)),
+                            c.getString(c.getColumnIndex(USUARIO_EMAIL)),
+                            c.getString(c.getColumnIndex(USUARIO_DIRECCION)),
+                            c.getString(c.getColumnIndex(USUARIO_PROVINCIA)),
+                            c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)),
+                            c.getString(c.getColumnIndex(USUARIO_APELLIDO1)),
+                            c.getString(c.getColumnIndex(USUARIO_APELLIDO2)),
+                            c.getString(c.getColumnIndex(USUARIO_COMAUT)),
+                            c.getString(c.getColumnIndex(USUARIO_NOMBRE)),
+                            c.getString(c.getColumnIndex(USUARIO_PASS))
+                    );
+                }
+                //i++;
+            }while (c.moveToNext());
+        }
 
-        return td;
+        db.close();
+        return td1;
     }
+
+
+
+
+
+
+
+
 
 
     /*
@@ -190,7 +314,7 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
                 td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
                 td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
                 td.setEmail(c.getString(c.getColumnIndex(USUARIO_EMAIL)));
-
+                td.setPassword(c.getString(c.getColumnIndex(USUARIO_PASS)));
                 // adding to Usuario list
                 usuarios.add(td);
             } while (c.moveToNext());
@@ -203,7 +327,7 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
     /*
      * Updating a Usuario
      */
-    public int updateToDo(Usuario usuario) {
+    public int updateUsuario(Usuario usuario) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -216,7 +340,8 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
         values.put(USUARIO_PROVINCIA, usuario.getProvincia());
         values.put(USUARIO_LOCALIDAD, usuario.getLocalidad());
         values.put(USUARIO_DIRECCION, usuario.getDireccion());
-        values.put(USUARIO_EMAIL,usuario.getEmail());
+        values.put(USUARIO_EMAIL, usuario.getEmail());
+        values.put(USUARIO_PASS,usuario.getPassword());
 
         // updating row
         return db.update(TABLA_USUARIOS, values, USUARIO_DNI + " = ?",
@@ -244,10 +369,28 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
     * ==========================================================================
     * */
 
+    public long crearPedido(Pedido pedido) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        //values.put(PEDIDO_CODIGO, pedido.getCodigo());
+        values.put(PEDIDO_USUARIODNI, pedido.getUsuarioDNI());
+        values.put(PEDIDO_ZONAID, pedido.getZonaId());
+        values.put(PEDIDO_PESO, pedido.getPeso());
+        values.put(PEDIDO_TARIFAPESO, pedido.getTarifaPeso());
+
+        // insert row
+        long usuario_id = db.insert(TABLA_PEDIDOS, null, values);
+
+        return usuario_id;
+    }
+
+
     /*
-     * getting all usuarios
+     * getting all pedidos
      * */
-    public List<Pedido> getTodoPedidos() {
+    public List<Pedido> getAllPedidos() {
         List<Pedido> pedidos = new ArrayList<Pedido>();
         String selectQuery = "SELECT  * FROM " + TABLA_PEDIDOS;
 
@@ -271,4 +414,107 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
 
         return pedidos;
     }
+
+
+    /*
+     * getting all pedidos usuario
+     * */
+    public List<Pedido> getAllPedidosUsuario(String dniUsuario) {
+        List<Pedido> pedidos = new ArrayList<>();
+        //String selectQuery = "SELECT  * FROM " + TABLA_PEDIDOS + " WHERE usuarioDNI LIKE '" + dniUsuario + "'";
+        String selectQuery = "SELECT * " +
+                "FROM "+TABLA_PEDIDOS+" p, "+TABLA_USUARIOS+" u, "+TABLA_DESTINOS+" d" +
+                " WHERE u."+USUARIO_DNI+" = p."+PEDIDO_USUARIODNI+" AND p."+  PEDIDO_ZONAID +" = d.codigo AND u."+USUARIO_DNI+" = '" + dniUsuario + "'" +
+                " GROUP BY p."+PEDIDO_CODIGO;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c.moveToFirst()) {
+            do {
+                Pedido td = new Pedido();
+                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setUsuarioDNI(c.getString(c.getColumnIndex(PEDIDO_USUARIODNI)));
+                td.setZonaId(c.getString(c.getColumnIndex(PEDIDO_ZONAID)));
+                td.setPeso(c.getString(c.getColumnIndex(PEDIDO_PESO)));
+                td.setTarifaPeso(c.getString(c.getColumnIndex(PEDIDO_TARIFAPESO)));
+                Log.d("RESULTADO",c.getString(c.getColumnIndex(PEDIDO_USUARIODNI)));
+                pedidos.add(td);
+            } while (c.moveToNext());
+        }
+
+        return pedidos;
+    }
+
+
+
+
+    /*
+    * ==========================================================================
+    * ==========================================================================
+    *
+    *                           CRUD DESTINOS
+    *
+    * ==========================================================================
+    * ==========================================================================
+    * */
+
+    public long crearDestino(Destino destino) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        //values.put(PEDIDO_CODIGO, pedido.getCodigo());
+        values.put(DESTINO_NOMBRE, destino.getNombre());
+        values.put(DESTINO_ZONA, destino.getZona());
+        values.put(DESTINO_PRECIO, destino.getPrecio());
+        values.put(DESTINO_IMAGEN, destino.getImagen());
+
+        // insert row
+        long destino_id = db.insert(TABLA_DESTINOS, null, values);
+
+        return destino_id;
+    }
+
+
+    /*
+     * getting all destinos
+     * */
+    public List<Destino> getAllDestinos() {
+        List<Destino> destinos = new ArrayList<Destino>();
+        String selectQuery = "SELECT  * FROM " + TABLA_DESTINOS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                Destino td = new Destino();
+                td.setId(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setNombre((c.getString(c.getColumnIndex(DESTINO_NOMBRE))));
+                td.setZona(c.getString(c.getColumnIndex(DESTINO_ZONA)));
+                td.setPrecio(c.getColumnIndex(DESTINO_PRECIO));
+                td.setImagen(c.getColumnIndex(DESTINO_IMAGEN));
+
+                // adding to Usuario list
+                destinos.add(td);
+            } while (c.moveToNext());
+        }
+
+        return destinos;
+    }
+
+    public int getCountDestinos(){
+
+        String selectQuery = "SELECT COUNT(*) FROM " + TABLA_DESTINOS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+        int destinos = c.getCount();
+
+        return destinos;
+
+    }
+
 }

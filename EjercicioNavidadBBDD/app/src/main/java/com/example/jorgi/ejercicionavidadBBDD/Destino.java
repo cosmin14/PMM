@@ -9,11 +9,11 @@ public class Destino implements Serializable {
 
     private int id;
     private String nombre;
-    private int zona;
+    private String zona;
     private int precio;
     private int imagen;
 
-    public Destino(int id, String nombre, int zona, int precio, int imagen) {
+    public Destino(int id, String nombre, String zona, int precio, int imagen) {
         this.id = id;
         this.nombre = nombre;
         this.zona = zona;
@@ -21,7 +21,17 @@ public class Destino implements Serializable {
         this.imagen = imagen;
     }
 
-            /** GETTERS */
+    public Destino(String nombre, String zona, int precio, int imagen) {
+        this.nombre = nombre;
+        this.zona = zona;
+        this.precio = precio;
+        this.imagen = imagen;
+    }
+
+    public Destino() {
+    }
+
+    /** GETTERS */
 
     public int getId() {
 
@@ -32,7 +42,7 @@ public class Destino implements Serializable {
         return nombre;
     }
 
-    public int getZona() {
+    public String getZona() {
         return zona;
     }
 
@@ -54,7 +64,7 @@ public class Destino implements Serializable {
         this.nombre = nombre;
     }
 
-    public void setZona(int zona) {
+    public void setZona(String zona) {
         this.zona = zona;
     }
 
