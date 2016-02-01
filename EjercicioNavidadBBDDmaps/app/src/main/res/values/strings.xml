@@ -1,0 +1,18 @@
+<resources>
+    <string name="app_name">Ejercicio de Navidad BBDD</string>
+    <string name="title_activity_about">Acerca de...</string>
+    <string name="title_activity_datos">Datos del cliente</string>
+    <string name="title_activity_resumen">Resumen del pedido</string>
+    <string name="title_activity_informacion">informacion</string>
+    <string name="google_maps_key">Map</string>
+    <string name="title_activity_login">Login</string>
+    <string name="action_about">Acerca de...</string>
+    <string name="action_login">Login</string>
+    <string name="action_logout">Logout</string>
+    <string name="action_admin">Admin</string>
+    <string name="action_localizacion">Localizacion</string>
+    <color name="rojoError">#ffb3b3</color>
+    <string name="title_activity_localizacion">Map</string>
+    <string name="title_activity_maps">Localización</string>
+
+</resources>
