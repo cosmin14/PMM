@@ -1,7 +1,6 @@
 package com.example.jorgi.figurasaleatorias;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -18,15 +17,17 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.jorgi.figurasaleatorias.clases.Figuras;
+
+import petrov.kristiyan.colorpicker.ColorPicker;
+
 public class MisDibujos extends AppCompatActivity {
 
-    private Figuras figurasArray[] =
-            new Figuras[] {
-                    new Figuras("Circulo",R.drawable.circulo),
-                    new Figuras("Triangulo",R.drawable.triangulo),
-                    new Figuras("Rectangulo",R.drawable.rectangulo),
-                    new Figuras("Cuadrado",R.drawable.quadrado)
-            };
+    private Figuras figurasArray[] = {
+            new Figuras("Circulo",R.drawable.circulo),
+            new Figuras("Triangulo",R.drawable.triangulo),
+            new Figuras("Rectangulo",R.drawable.rectangulo),
+            new Figuras("Cuadrado",R.drawable.quadrado)};
 
     Spinner miSpinner;
     ListView lista;
@@ -90,8 +91,8 @@ public class MisDibujos extends AppCompatActivity {
             LayoutInflater inflater = miActividad.getLayoutInflater();
             View item = inflater.inflate(R.layout.figuras, null);
 
-            /*TextView lblNombre = (TextView) item.findViewById(R.id.lblTitulo);
-            lblNombre.setText("" + figurasArray[position].getNombre()+ " ");*/
+            TextView lblNombre = (TextView) item.findViewById(R.id.lblTitulo);
+            lblNombre.setText("" + figurasArray[position].getNombre()+ " ");
 
             ImageView imgFigura = (ImageView) item.findViewById(R.id.imagenFigura);
             imgFigura.setImageResource(figurasArray[position].getImagen());
