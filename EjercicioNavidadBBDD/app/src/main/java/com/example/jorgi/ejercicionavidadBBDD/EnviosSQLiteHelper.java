@@ -75,7 +75,7 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
             "  );";
 
     //Sentencia SQL para crear la tabla de Usuarios
-    String sqlCreateUsuarios = "CREATE TABLE IF NOT EXISTS `usuarios` (" +
+    String sqlCreateUsuarios = "CREATE TABLE `usuarios` (" +
             "  `"+KEY_CODIGO+"` INTEGER NOT NULL PRIMARY KEY," +
             "  `"+USUARIO_DNI+"` TEXT NOT NULL," +
             "  `"+USUARIO_NOMBRE+"` TEXT NOT NULL," +
@@ -109,13 +109,24 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
 
-        db.execSQL("DROP TABLE IF EXISTS usuarios");
-        db.execSQL("DROP TABLE IF EXISTS destinos");
-        db.execSQL("DROP TABLE IF EXISTS pedidos");
-
         db.execSQL(sqlCreateUsuarios);
         db.execSQL(sqlCreateDestinos);
         db.execSQL(sqlCreatePedidos);
+
+        ContentValues values = new ContentValues();
+        values.put(USUARIO_CODIGO, 1);
+        values.put(USUARIO_DNI, "123456789A");
+        values.put(USUARIO_NOMBRE, "admin");
+        values.put(USUARIO_APELLIDO1, "apellido1");
+        values.put(USUARIO_APELLIDO2, "apellido2");
+        values.put(USUARIO_COMAUT, "comaut");
+        values.put(USUARIO_PROVINCIA, "provinvia");
+        values.put(USUARIO_LOCALIDAD, "localidad");
+        values.put(USUARIO_DIRECCION, "direccion");
+        values.put(USUARIO_EMAIL, "admin@admin.com");
+        values.put(USUARIO_PASS, "admin");
+        // insert row
+        db.insert(TABLA_USUARIOS, null, values);
     }
 
     @Override
@@ -184,32 +195,10 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
         String selectQuery = "SELECT  * FROM " + TABLA_USUARIOS + " WHERE " + USUARIO_DNI + " = '" + usuario_dni + "'";
         Cursor c = db.rawQuery(selectQuery, null);
 
-        /*int num = c.getCount();
-        Usuario td = null;
-
-        if (num > 0){
-            if (c != null) {
-                c.moveToFirst();
-                td = new Usuario();
-                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
-                td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
-                td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
-                td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
-                td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
-                td.setComAut(c.getString(c.getColumnIndex(USUARIO_COMAUT)));
-                td.setProvincia(c.getString(c.getColumnIndex(USUARIO_PROVINCIA)));
-                td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
-                td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
-                td.setEmail(c.getString(c.getColumnIndex(USUARIO_EMAIL)));
-            }
-        }
-        return td;*/
-
-
         if (c.moveToFirst()) {
             do {
                 Usuario td = new Usuario();
-                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setCodigo(c.getString(c.getColumnIndex(KEY_CODIGO)));
                 td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
                 td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
                 td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
@@ -224,33 +213,19 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
                 usuarios.add(td);
             } while (c.moveToNext());
         }
-
         return usuarios;
-
-
     }
 
     public Usuario getUsuarioLogin(String usuario_email) {
         SQLiteDatabase db = this.getWritableDatabase();
-
         String selectQuery = "SELECT * FROM " + TABLA_USUARIOS + " WHERE " + USUARIO_EMAIL + " = '" + usuario_email + "'";
-        Cursor c = db.rawQuery(selectQuery,null);
-
-        //String[] args = new String[]{usuario_dni};
-        //String[] campos = new String[]{USUARIO_CODIGO,USUARIO_DNI,USUARIO_NOMBRE,USUARIO_APELLIDO1,USUARIO_APELLIDO2, USUARIO_COMAUT,USUARIO_PROVINCIA,USUARIO_LOCALIDAD,USUARIO_DIRECCION,USUARIO_EMAIL};
-        //Cursor c = db.rawQuery("SELECT * FROM usuarios WHERE dni=?", args);
-        //Cursor c = db.query("usuarios",campos,null,null,null,null,null);
-
-
+        Cursor c = db.rawQuery(selectQuery, null);
         Usuario td = new Usuario();
-        Usuario td1 = new Usuario();
-        String email = "";
-
         if (c.moveToFirst()){
             do {
-                email = c.getString(c.getColumnIndex(USUARIO_EMAIL)).toString();
-                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
+                td.setCodigo(c.getString(c.getColumnIndex(KEY_CODIGO)));
                 td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
+                td.setEmail((c.getString(c.getColumnIndex(USUARIO_EMAIL))));
                 td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
                 td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
                 td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
@@ -259,41 +234,42 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
                 td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
                 td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
                 td.setPassword(c.getString(c.getColumnIndex(USUARIO_PASS)));
-                if (email.equalsIgnoreCase(usuario_email)){
-                    td1 = new Usuario(
-                            c.getString(c.getColumnIndex(USUARIO_DNI)),
-                            c.getString(c.getColumnIndex(USUARIO_EMAIL)),
-                            c.getString(c.getColumnIndex(USUARIO_DIRECCION)),
-                            c.getString(c.getColumnIndex(USUARIO_PROVINCIA)),
-                            c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)),
-                            c.getString(c.getColumnIndex(USUARIO_APELLIDO1)),
-                            c.getString(c.getColumnIndex(USUARIO_APELLIDO2)),
-                            c.getString(c.getColumnIndex(USUARIO_COMAUT)),
-                            c.getString(c.getColumnIndex(USUARIO_NOMBRE)),
-                            c.getString(c.getColumnIndex(USUARIO_PASS))
-                    );
-                }
-                //i++;
+                c.close();
             }while (c.moveToNext());
         }
-
         db.close();
-        return td1;
+        return td;
     }
 
-
-
-
-
-
-
-
-
+    public Usuario getUsuarioByDni(String dni) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLA_USUARIOS + " WHERE " + USUARIO_DNI + " = '"+dni+"'";
+        Cursor c = db.rawQuery(selectQuery, null);
+        Usuario td = new Usuario();
+        if (c.moveToFirst()){
+            do {
+                td.setCodigo(c.getString(c.getColumnIndex(KEY_CODIGO)));
+                td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
+                td.setEmail((c.getString(c.getColumnIndex(USUARIO_EMAIL))));
+                td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
+                td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
+                td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
+                td.setComAut(c.getString(c.getColumnIndex(USUARIO_COMAUT)));
+                td.setProvincia(c.getString(c.getColumnIndex(USUARIO_PROVINCIA)));
+                td.setLocalidad(c.getString(c.getColumnIndex(USUARIO_LOCALIDAD)));
+                td.setDireccion(c.getString(c.getColumnIndex(USUARIO_DIRECCION)));
+                td.setPassword(c.getString(c.getColumnIndex(USUARIO_PASS)));
+                c.close();
+            }while (c.moveToNext());
+        }
+        db.close();
+        return td;
+    }
 
     /*
      * getting all usuarios
      * */
-    public List<Usuario> getTodoUsuarios() {
+    public List<Usuario> getAllUsuarios() {
         List<Usuario> usuarios = new ArrayList<Usuario>();
         String selectQuery = "SELECT  * FROM " + TABLA_USUARIOS;
 
@@ -304,8 +280,8 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
         if (c.moveToFirst()) {
             do {
                 Usuario td = new Usuario();
-                td.setCodigo(c.getInt(c.getColumnIndex(KEY_CODIGO)));
-                td.setNombre((c.getString(c.getColumnIndex(USUARIO_NOMBRE))));
+                td.setCodigo(c.getString(c.getColumnIndex(KEY_CODIGO)));
+                td.setNombre(c.getString(c.getColumnIndex(USUARIO_NOMBRE)));
                 td.setDni(c.getString(c.getColumnIndex(USUARIO_DNI)));
                 td.setApellido1(c.getString(c.getColumnIndex(USUARIO_APELLIDO1)));
                 td.setApellido2(c.getString(c.getColumnIndex(USUARIO_APELLIDO2)));
@@ -351,7 +327,7 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
     /*
      * Deleting a Usuario
      */
-    public void deleteToDo(long usuario_dni) {
+    public void deleteUsuario(String usuario_dni) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLA_USUARIOS, USUARIO_DNI + " = ?",
                 new String[] { String.valueOf(usuario_dni) });

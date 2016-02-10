@@ -23,30 +23,15 @@
 
 
                 <!-- LAYOUT RESUMEN DATOS -->
-
                 <include layout="@layout/resumen_datos"/>
 
 
                 <!-- LAYOUT RESUMEN PEDIDO -->
-
                 <include layout="@layout/resumen_pedido" />
 
-                <LinearLayout
-                    android:id="@+id/tabMisPedidos"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:gravity="clip_horizontal"
-                    android:paddingTop="50dp"
-                    android:paddingLeft="20dp">
 
-                    <ListView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:id="@+id/listViewMisPedidos"></ListView>
-                </LinearLayout>
-
+                <!-- LAYOUT RESUMEN PEDIDOS -->
+                <include layout="@layout/resumen_pedidos" />
 
 
             </FrameLayout>

@@ -27,7 +27,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".loginActivity"
+            android:name=".activities.loginActivity"
             android:label="@string/title_activity_login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -36,21 +36,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".usuarioActivity"
+            android:name=".activities.registroActivity"
             android:label="@string/title_activity_datos" />
         <activity
-            android:name=".pedidoActivity"
+            android:name=".activities.pedidoActivity"
             android:label="@string/app_name" />
         <activity
-            android:name=".aboutActivity"
+            android:name=".activities.aboutActivity"
             android:label="@string/title_activity_about" />
         <activity
-            android:name=".resumenActivity"
+            android:name=".activities.resumenActivity"
             android:label="@string/title_activity_resumen" />
         <activity
-            android:name=".informacionActivity"
+            android:name=".activities.informacionActivity"
             android:label="@string/title_activity_informacion" />
-        <activity android:name=".adminActivity" />
+        <activity android:name=".activities.adminActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -64,7 +64,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name=".activities.MapsActivity"
             android:label="@string/title_activity_maps"></activity>
     </application>
 

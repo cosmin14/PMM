@@ -130,48 +130,27 @@ public class resumenActivity extends ActionBarActivity {
             /* SQLHelper */
 
             enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
-            SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
 
             Pedido p1 = new Pedido(u.getDni(), zonaStr, pesoStr, tarifaPesoStr);
             enviosHelper.crearPedido(p1);
 
-            Toast.makeText(resumenActivity.this, "DNI: "+u.getDni(), Toast.LENGTH_SHORT).show();
-
             List<Pedido> todosPedidos = enviosHelper.getAllPedidosUsuario(u.getDni());
             String[] pedidos = new String[todosPedidos.size()];
             int num = 0;
+
             for (Pedido pedido : todosPedidos) {
                 String linea = pedido.getCodigo() + " - Nombre: " + u.getNombre() + "\n Zona: " + pedido.getZonaId();
                 pedidos[num] = linea;
                 num++;
             }
 
-
-                /*if(dbEnvios != null) {
-                    Cursor cursor = dbEnvios.rawQuery("SELECT * FROM pedidos WHERE usuarioDNI LIKE '" + dniStr + "'", null);
-                    int cantidad = cursor.getCount();
-                    int i = 0;
-
-
-                    if (cursor.moveToFirst()) {
-                        do {
-                            String linea = cursor.getInt(0) + " - " + cursor.getString(1) + "\n" + cursor.getString(2)
-                                    + "\n" + cursor.getString(3) + "\n" + cursor.getString(4);
-                            pedidos[i] = linea;
-                            i++;
-                        } while (cursor.moveToNext());
-                    }*/
-
             //ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, pedidos);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.pedidos_view, pedidos);
             ListView lista = (ListView) findViewById(R.id.listViewMisPedidos);
             lista.setAdapter(adapter);
-
-                    //cursor.close();
-                    //dbEnvios.close();
                 //}
             //Cerramos la base de usuarioActivity
-            dbEnvios.close();
+            enviosHelper.close();
         }// if extras!=null
     }// onCreate
 

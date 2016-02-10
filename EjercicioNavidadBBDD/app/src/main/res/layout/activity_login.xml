@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,26 +14,56 @@
     android:background="#fff">
 
 
-    <EditText
-        android:id="@+id/userLogin"
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"
-        android:hint="correo"
-        android:layout_marginTop="120dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:id="@+id/textViewTitulo"
         android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:text="Acceder a la app"
+        android:textSize="35dp" />
 
-    <EditText
-        android:id="@+id/passLogin"
+
+    <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/textViewTitulo"
+        app:hintTextAppearance="@android:style/TextAppearance.Small"
+        android:layout_marginTop="20dp"
+        android:hint="correo"
+        android:id="@+id/TILloginEmail">
+        <EditText
+            android:id="@+id/userLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:inputType="textEmailAddress"
+            android:hint="correo"
+            android:layout_marginTop="120dp"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:textAlignment="center" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:hintTextAppearance="@android:style/TextAppearance.Small"
+        android:layout_below="@+id/TILloginEmail"
         android:hint="contraseña"
-        android:inputType="textPassword"
-        android:layout_below="@+id/userLogin"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp" />
+        android:id="@+id/TILloginPass">
+        <EditText
+            android:id="@+id/passLogin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="contraseña"
+            android:inputType="textPassword"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:textAlignment="center" />
+    </android.support.design.widget.TextInputLayout>
 
     <Button
         android:id="@+id/btnLogin"
@@ -43,7 +75,7 @@
         android:background="#0004FF"
         android:textSize="20dp"
         android:textColor="#FFF"
-        android:layout_below="@+id/passLogin"
+        android:layout_below="@+id/TILloginPass"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_marginTop="10dp" />
@@ -59,17 +91,6 @@
         android:background="#FF000D"
         android:textColor="#FFF"
         android:textSize="20dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:id="@+id/textView5"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="50dp"
-        android:text="Acceder a la app"
-        android:textSize="35dp" />
 
 
 </RelativeLayout>

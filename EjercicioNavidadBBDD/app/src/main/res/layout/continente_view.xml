@@ -34,7 +34,8 @@
         android:text="Precio"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/textView3"
-        android:layout_toEndOf="@+id/textView3" />
+        android:layout_toEndOf="@+id/textView3"
+        />
 
     <TextView
         android:layout_width="wrap_content"
@@ -54,6 +55,7 @@
         android:id="@+id/textView3"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/lblContinente"
-        android:layout_toEndOf="@+id/lblContinente" />
+        android:layout_toEndOf="@+id/lblContinente"
+        />
 
 </RelativeLayout>

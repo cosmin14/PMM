@@ -3,22 +3,26 @@ package com.example.jorgi.ejercicionavidadBBDD;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.EditText;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 public class loginActivity extends ActionBarActivity {
 
+    TextInputLayout TILuser, TILpass;
     Button btnLogin, btnRegistro;
-    TextView textViewUsuario, textViewPass;
-    String email = "usuario", pass="pass";
+    EditText editUsuario, editPass;
+    String email = "usuario", pass="pass1";
     Usuario usuario;
     EnviosSQLiteHelper enviosHelper;
-    public static boolean logged = false;
+    Drawable originalDrawable;
     public static int estadoSesion = 0; //0 no logueado - 1 logeado
 
     @Override
@@ -26,55 +30,73 @@ public class loginActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        btnLogin = (Button)findViewById(R.id.btnLogin);
-        textViewUsuario = (TextView)findViewById(R.id.userLogin);
-        textViewPass = (TextView)findViewById(R.id.passLogin);
+        TILuser = (TextInputLayout)findViewById(R.id.TILloginEmail);
+        TILpass = (TextInputLayout)findViewById(R.id.TILloginPass);
+        editUsuario = (EditText)findViewById(R.id.userLogin);
+        editPass = (EditText)findViewById(R.id.passLogin);
         btnRegistro = (Button)findViewById(R.id.buttonRegistro);
-
+        btnLogin = (Button)findViewById(R.id.btnLogin);
+        originalDrawable = editUsuario.getBackground();
         enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
 
         //Recuperamos las preferencias
-        SharedPreferences prefs =
-                getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
 
+        // Coge los valores i si no existen les pone de valor vacio
         String sharedCorreo = prefs.getString("email", "vacio");
-        String sharedPass = prefs.getString("pass", "vacio");
-
-        Log.d(">>>>>> RESULTADO", ">>>>>>> " + sharedCorreo + " - " + sharedPass);
+        String sharedPass = prefs.getString("pass1", "vacio");
 
         usuario = enviosHelper.getUsuarioLogin(sharedCorreo);
 
         if (usuario.validateLogin(sharedCorreo,sharedPass,usuario.getEmail(),usuario.getPassword())){
-
-            Toast.makeText(loginActivity.this, "Ya logeado "+usuario.getNombre() + " " + usuario.getApellido1(), Toast.LENGTH_LONG).show();
-
             Intent i = new Intent(getApplicationContext(), pedidoActivity.class);
             Bundle miBundle = new Bundle();
             miBundle.putSerializable("usuario", usuario);
             i.putExtras(miBundle);
             startActivity(i);
+            finish();
         }
+
+        final View.OnFocusChangeListener existing1 = editUsuario.getOnFocusChangeListener();
+        editUsuario.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                existing1.onFocusChange(v, hasFocus);
+                if (!hasFocus){
+                    email = editUsuario.getText().toString();
+                    validarVacio(TILuser,editUsuario,email,"Correo");
+                }
+            }
+        });
+
+        final View.OnFocusChangeListener existing2 = editPass.getOnFocusChangeListener();
+        editPass.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                existing2.onFocusChange(v, hasFocus);
+                if (!hasFocus) {
+                    pass = editPass.getText().toString();
+                    validarVacio(TILpass,editPass, pass, "Contraseña");
+                }
+            }
+        });
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                email = textViewUsuario.getText().toString();
-                pass = textViewPass.getText().toString();
+
+                email = editUsuario.getText().toString();
+                pass = editPass.getText().toString();
                 usuario = enviosHelper.getUsuarioLogin(email);
 
                 if (usuario.validateLogin(email, pass, usuario.getEmail(), usuario.getPassword())) {
                     //Guardamos las preferencias
-                    SharedPreferences prefs =
-                            getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
-
+                    SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = prefs.edit();
                     editor.putString("email", "" + usuario.getEmail());
-                    editor.putString("pass", "" + usuario.getPassword());
+                    editor.putString("pass1", "" + usuario.getPassword());
                     editor.commit();
 
-                    logged = true;
-
-                    Toast.makeText(loginActivity.this, "Login details are saved..", Toast.LENGTH_SHORT).show();
                     Toast.makeText(loginActivity.this, "Bienvenido " + usuario.getNombre() + " " + usuario.getApellido1(), Toast.LENGTH_LONG).show();
 
                     Intent i = new Intent(getApplicationContext(), pedidoActivity.class);
@@ -82,6 +104,8 @@ public class loginActivity extends ActionBarActivity {
                     miBundle.putSerializable("usuario", usuario);
                     i.putExtras(miBundle);
                     startActivity(i);
+                    finish();
+
                 } else {
                     Toast.makeText(loginActivity.this, "USUARIO ERRONEO", Toast.LENGTH_SHORT).show();
                 }
@@ -98,20 +122,17 @@ public class loginActivity extends ActionBarActivity {
 
     }// onCreate
 
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        Toast.makeText(loginActivity.this, "ATRAS", Toast.LENGTH_SHORT).show();
-
-        /*Intent intent = new Intent(login.this, Main.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("EXIT", true);
-        startActivity(intent);*/
-
-        loginActivity.this.finish();
-        System.exit(0);
+    public boolean validarVacio(TextInputLayout textInputLayout, EditText editText, String campo, String nombreCampo){
+        if (campo.length() == 0){
+            textInputLayout.setErrorEnabled(true);
+            textInputLayout.setError(nombreCampo + " no puede estar vacio");
+            editText.setBackgroundDrawable( getResources().getDrawable(R.drawable.bordercolorerror) );
+            return false;
+        }else{
+            textInputLayout.setErrorEnabled(false);
+            editText.setBackgroundDrawable( originalDrawable );
+            return true;
+        }
     }
 
 }

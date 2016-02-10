@@ -7,7 +7,7 @@ import java.io.Serializable;
  */
 public class Usuario implements Serializable{
 
-    private int codigo;
+    private String codigo;
     private String nombre;
     private String dni;
     private String apellido1;
@@ -18,6 +18,13 @@ public class Usuario implements Serializable{
     private String direccion;
     private String email;
     private String password;
+
+    public Usuario(String codigo, String email, String nombre, String password) {
+        this.codigo = codigo;
+        this.email = email;
+        this.nombre = nombre;
+        this.password = password;
+    }
 
     public Usuario(String dni, String email, String direccion, String provincia, String localidad, String apellido1, String apellido2, String comAut, String nombre, String password) {
         this.email = email;
@@ -31,7 +38,7 @@ public class Usuario implements Serializable{
         this.dni = dni;
         this.password = password;
     }
-    public Usuario(int codigo, String dni, String email, String direccion, String provincia, String localidad, String apellido1, String apellido2, String comAut, String nombre, String password) {
+    public Usuario(String codigo, String dni, String email, String direccion, String provincia, String localidad, String apellido1, String apellido2, String comAut, String nombre, String password) {
         this.codigo = codigo;
         this.email = email;
         this.direccion = direccion;
@@ -51,7 +58,7 @@ public class Usuario implements Serializable{
     /* GETTERS */
 
 
-    public int getCodigo() {
+    public String getCodigo() {
         return codigo;
     }
 
@@ -98,11 +105,11 @@ public class Usuario implements Serializable{
 
                                             /* SETTERS*/
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
 
-    public void setDni(String nombre) {
+    public void setDni(String dni) {
         this.dni = dni;
     }
 

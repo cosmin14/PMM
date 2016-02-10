@@ -43,6 +43,8 @@ public class pedidoActivity extends ActionBarActivity {
     RadioGroup radioGroup;
     Button btnEnviar;
     ImageView img;
+    SharedPreferences prefs;
+    String userAdmin;
     int estadoSesion = 0; //0 no logueado - 1 logeado
 
     private Destino[] destinos = {
@@ -59,9 +61,12 @@ public class pedidoActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pedido);
 
+        prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
+        userAdmin = prefs.getString("email", "otro");
+
         final Bundle extras = getIntent().getExtras(); // Recogo el bundle de la actividad anterior
 
-        EnviosSQLiteHelper enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
+        /*EnviosSQLiteHelper enviosHelper = new EnviosSQLiteHelper(this, "DBEnvios", null, 1);
         //SQLiteDatabase dbEnvios = enviosHelper.getWritableDatabase();
 
         int numDestinos = enviosHelper.getCountDestinos();
@@ -70,7 +75,7 @@ public class pedidoActivity extends ActionBarActivity {
             Destino d = new Destino( destinos[i].getNombre(), destinos[i].getZona(), destinos[i].getPrecio(), destinos[i].getImagen() );
             d.getNombre();
             enviosHelper.crearDestino(d);
-        }
+        }*/
 
 
         /*if (numDestinos == 0){
@@ -216,13 +221,21 @@ public class pedidoActivity extends ActionBarActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         getMenuInflater().inflate(R.menu.menu_pedido, menu);
 
         MenuItem login = menu.findItem(R.id.action_login);
         MenuItem logout = menu.findItem(R.id.action_logout);
+        MenuItem admin = menu.findItem(R.id.action_admin);
 
         login.setVisible(false);
         logout.setVisible(true);
+
+        if (userAdmin.equals("admin@admin.com")){
+            admin.setVisible(true);
+        }else{
+            admin.setVisible(false);
+        }
 
         return true;
     }
@@ -230,8 +243,6 @@ public class pedidoActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-
-        SharedPreferences prefs = getSharedPreferences("MisPreferencias", Context.MODE_PRIVATE);
 
         if (id == R.id.action_about) {
             Intent intentMain = new Intent(pedidoActivity.this , aboutActivity.class);
@@ -243,8 +254,11 @@ public class pedidoActivity extends ActionBarActivity {
             return true;
         }else if (id == R.id.action_logout){
             prefs.edit().clear().commit();
-            loginActivity.logged = false;
             Intent intentMain = new Intent(pedidoActivity.this , loginActivity.class);
+            startActivity(intentMain);
+            return true;
+        }else if (id == R.id.action_admin){
+            Intent intentMain = new Intent(pedidoActivity.this , adminActivity.class);
             startActivity(intentMain);
             return true;
         }
