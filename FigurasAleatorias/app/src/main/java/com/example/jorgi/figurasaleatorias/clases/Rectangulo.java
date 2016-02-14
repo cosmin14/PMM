@@ -3,18 +3,42 @@ package com.example.jorgi.figurasaleatorias.clases;
 /**
  * Created by Jorgi on 10/02/2016.
  */
-public class Rectangulo extends Figuras {
+public class Rectangulo extends Figura {
 
-    int base;
-    int altura;
+    protected float base;
+    protected float altura;
 
-    public Rectangulo(String nombre, int imagen) {
-        super(nombre, imagen);
+    public Rectangulo(){
+        super("rectangulo");
     }
 
-    public Rectangulo(String nombre, int imagen, int base, int altura) {
-        super(nombre, imagen);
+    public Rectangulo(int color, float base, float altura) {
+        super(color, "rectangulo");
         this.base = base;
         this.altura = altura;
+    }
+
+    public Rectangulo(String tipo, int imagen) {
+        super(tipo, imagen);
+    }
+
+    public double getBase() {
+        return base;
+    }
+
+    public double getAltura() {
+        return altura;
+    }
+
+    public void setBase(float base) {
+        this.base = base;
+    }
+
+    public void setAltura(float altura) {
+        this.altura = altura;
+    }
+
+    public double area(){
+        return base * altura;
     }
 }

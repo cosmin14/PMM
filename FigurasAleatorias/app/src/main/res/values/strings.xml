@@ -19,4 +19,8 @@
         <item>#cccccc</item>
         <item>#888888</item>
     </string-array>
+    <string name="color_swatch_description">Color %1$d</string>
+    <string name="color_swatch_description_selected">Color %1$d selected</string>
+    <string name="color_picker_default_title">Select a Color</string>
+    <string name="dialog_title">pick a color</string>
 </resources>

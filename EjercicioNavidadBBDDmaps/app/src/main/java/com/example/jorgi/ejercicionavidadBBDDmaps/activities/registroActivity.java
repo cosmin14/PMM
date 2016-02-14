@@ -199,8 +199,8 @@ public class registroActivity extends ActionBarActivity {
                 if (!hasFocus) {
                     nombre = editNombre.getText().toString();
                     //String cap = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
-                    String cap = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
-                    editNombre.setText(cap);
+                    /*String cap = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
+                    editNombre.setText(cap);*/
                     validarVacio(TILnombre, editNombre, nombre, "Nombre");
                 }
             }

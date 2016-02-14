@@ -3,24 +3,25 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:gravity="center_vertical">
 
     <Button
         android:onClick="launchDrawShapes1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:text="Aleatorio" />
 
     <Button
         android:onClick="launchDrawShapes2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:text="Drawable" />
 
     <Button
         android:onClick="launchMisDibujos"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:text="Mis Dibujos"
         android:id="@+id/buttonMisDibujos"
         android:layout_gravity="center_horizontal" />
