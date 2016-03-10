@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,6 +24,7 @@ import com.example.jorgi.ejercicionavidadBBDDmaps.clases.EnviosSQLiteHelper;
 import com.example.jorgi.ejercicionavidadBBDDmaps.R;
 import com.example.jorgi.ejercicionavidadBBDDmaps.clases.Usuario;
 
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -199,8 +201,10 @@ public class registroActivity extends ActionBarActivity {
                 if (!hasFocus) {
                     nombre = editNombre.getText().toString();
                     //String cap = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
-                    /*String cap = nombre.substring(0, 1).toUpperCase() + nombre.substring(1);
-                    editNombre.setText(cap);*/
+                    if (nombre.length() > 0){
+                        nombre = upperCaseAllFirst(nombre);
+                        editNombre.setText(nombre);
+                    }
                     validarVacio(TILnombre, editNombre, nombre, "Nombre");
                 }
             }
@@ -213,8 +217,10 @@ public class registroActivity extends ActionBarActivity {
                 //existing2.onFocusChange(v, hasFocus);
                 if (!hasFocus) {
                     apellido1 = editApellido1.getText().toString();
-                    String cap = apellido1.substring(0, 1).toUpperCase() + apellido1.substring(1);
-                    editApellido1.setText(cap);
+                    if (apellido1.length() > 0) {
+                        apellido1 = upperCaseAllFirst(apellido1);
+                        editApellido1.setText(apellido1);
+                    }
                     validarVacio(TILapellido1, editApellido1, apellido1, "1r Apellido");
                 }
             }
@@ -227,8 +233,10 @@ public class registroActivity extends ActionBarActivity {
                 //existing3.onFocusChange(v, hasFocus);
                 if (!hasFocus) {
                     apellido2 = editApellido2.getText().toString();
-                    String cap = apellido2.substring(0, 1).toUpperCase() + apellido2.substring(1);
-                    editApellido2.setText(cap);
+                    if (apellido2.length() > 0) {
+                        apellido2 = upperCaseAllFirst(apellido2);
+                        editApellido2.setText(apellido2);
+                    }
                     validarVacio(TILapellido2, editApellido2, apellido2, "2o Apellido");
                 }
             }
@@ -241,8 +249,10 @@ public class registroActivity extends ActionBarActivity {
                 //existing4.onFocusChange(v, hasFocus);
                 if (!hasFocus) {
                     localidad = editLocalidad.getText().toString();
-                    String cap = localidad.substring(0, 1).toUpperCase() + localidad.substring(1);
-                    editLocalidad.setText(cap);
+                    if (localidad.length() > 0) {
+                        localidad = upperCaseAllFirst(localidad);
+                        editLocalidad.setText(localidad);
+                    }
                     validarVacio(TILlocalidad, editLocalidad, localidad, "Localidad");
                 }
             }
@@ -255,8 +265,10 @@ public class registroActivity extends ActionBarActivity {
                 //existing5.onFocusChange(v, hasFocus);
                 if (!hasFocus) {
                     direccion = editDireccion.getText().toString();
-                    String cap = direccion.substring(0, 1).toUpperCase() + direccion.substring(1);
-                    editDireccion.setText(cap);
+                    if (direccion.length() > 0) {
+                        direccion = upperCaseAllFirst(direccion);
+                        editDireccion.setText(direccion);
+                    }
                     validarVacio(TILdireccion, editDireccion, direccion, "Direccion");
                 }
             }
@@ -281,8 +293,10 @@ public class registroActivity extends ActionBarActivity {
                 //existing10.onFocusChange(v, hasFocus);
                 if (!hasFocus) {
                     dni = editDNI.getText().toString();
-                    String cap = dni.substring(1);
-                    editDNI.setText(cap);
+                    if (dni.length() > 0){
+                        dni = dni.substring(0,dni.length()-1) + dni.substring(dni.length()-1).toUpperCase();
+                        editDNI.setText(dni);
+                    }
                     validarVacio(TILdni, editDNI, dni, "DNI");
                     isNifNie(TILdni, editDNI, dni, "DNI");
                 }
@@ -401,6 +415,23 @@ public class registroActivity extends ActionBarActivity {
             editText.setBackgroundDrawable( getResources().getDrawable(R.drawable.bordercolorerror) );
             return false;
         }
+    }//isNIF
+
+    public static String upperCaseAllFirst(String value) {
+
+        char[] array = value.toCharArray();
+        // Uppercase first letter.
+        array[0] = Character.toUpperCase(array[0]);
+
+        // Uppercase all letters that follow a whitespace character.
+        for (int i = 1; i < array.length; i++) {
+            if (Character.isWhitespace(array[i - 1])) {
+                array[i] = Character.toUpperCase(array[i]);
+            }
+        }
+
+        // Result.
+        return new String(array);
     }
 
 

@@ -62,6 +62,7 @@ public class loginActivity extends ActionBarActivity {
             finish();
         }
 
+        /*
         final View.OnFocusChangeListener existing1 = editUsuario.getOnFocusChangeListener();
         editUsuario.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -83,6 +84,7 @@ public class loginActivity extends ActionBarActivity {
                 }
             }
         });
+        */
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,6 +93,9 @@ public class loginActivity extends ActionBarActivity {
                 email = editUsuario.getText().toString();
                 pass = editPass.getText().toString();
                 usuario = enviosHelper.getUsuarioByEmail(email);
+
+                validarVacio(TILuser,editUsuario,email,"Correo");
+                validarVacio(TILpass,editPass, pass, "Contraseña");
 
                 if (usuario.validateLogin(email, pass, usuario.getEmail(), usuario.getPassword())) {
                     //Guardamos las preferencias

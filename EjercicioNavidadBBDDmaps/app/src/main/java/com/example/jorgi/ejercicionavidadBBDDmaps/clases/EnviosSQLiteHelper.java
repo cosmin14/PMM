@@ -370,10 +370,9 @@ public class EnviosSQLiteHelper extends SQLiteOpenHelper {
         //String selectQuery = "SELECT  * FROM " + TABLA_PEDIDOS + " WHERE usuarioDNI LIKE '" + dniUsuario + "'";
         String selectQuery = "SELECT * " +
                 "FROM "+TABLA_PEDIDOS+" p, "+TABLA_USUARIOS+" u" +
-                " WHERE u."+USUARIO_DNI+" = p."+PEDIDO_USUARIODNI+" AND u."+USUARIO_DNI+" = '" + dniUsuario + "'" +
-                " GROUP BY p."+PEDIDO_CODIGO;
+                " WHERE u."+USUARIO_DNI+" = p."+PEDIDO_USUARIODNI+" AND u."+USUARIO_DNI+" = '" + dniUsuario + "'";
 
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
 
         if (c.moveToFirst()) {

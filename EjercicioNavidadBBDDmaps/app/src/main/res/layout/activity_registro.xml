@@ -246,6 +246,7 @@
                 android:ellipsize="start"
                 android:gravity="center"
                 android:layout_marginTop="10dp"
+                android:drawableLeft="@drawable/visible_50"
                 android:drawableRight="@drawable/ic_lock_outline_black_24dp"/>
         </android.support.design.widget.TextInputLayout>
 
